@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="800pt" height="800pt" viewBox="0 0 800 800">
+<g enable-background="new">
+<g id="Layer-1" data-name="Layer">
+<clipPath id="cp0">
+<path transform="matrix(1,0,0,-1,0,800)" d="M 0 800 L 800 800 L 800 0 L 0 0 Z "/>
+</clipPath>
+<g clip-path="url(#cp0)">
+<path transform="matrix(1,0,0,-1,765.5,388.0615)" d="M 0 0 L 0 282.801 C 0 290.33 -7.529 290.33 -11.293 286.565 L -320.21 -101.639 L -320.21 -105.639 C -320.21 -109.402 -320.21 -109.402 -316.445 -109.402 L -90.581 -109.402 C -86.581 -109.402 -79.053 -105.639 -75.288 -101.639 L -3.765 -11.292 C -3.765 -7.528 0 -3.764 0 0 M -727.235 -11.292 L -493.607 -305.387 C -489.843 -309.15 -486.079 -312.915 -478.55 -312.915 L -256.215 -312.915 C -252.45 -312.915 -248.686 -309.15 -252.45 -305.387 L -723.471 286.565 C -727.235 290.33 -731 290.33 -731 282.801 L -731 0 C -731 -3.764 -731 -7.528 -727.235 -11.292 " fill="#ff4655"/>
+</g>
+</g>
+</g>
+</svg>
