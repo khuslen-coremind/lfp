@@ -19,15 +19,18 @@ import {
 	BsClock,
 	BsThreeDotsVertical,
 } from "react-icons/bs";
-import { FaDiscord } from "react-icons/fa";
+import { FiPlus } from "react-icons/fi";
 
+import { FaDiscord } from "react-icons/fa";
+import {IoChatbox} from "react-icons/io5"
 const useStyles = createStyles((theme) => ({
 	card: {
 		backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+		maxWidth: 476
 	},
 
 	imageSection: {
-		padding: theme.spacing.md,
+		padding: theme.spacing.sm,
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "space-around",
@@ -65,6 +68,10 @@ const useStyles = createStyles((theme) => ({
 		borderRadius: 30,
 		backgroundColor: "#1CC300",
 	},
+	txtContainer:{
+		maxWidth: 380,
+		flexGrow:1
+	}
 }));
 
 // const mockdata = [
@@ -86,7 +93,7 @@ function Room() {
 		userName: "dummbygod",
 		gameName: "dota",
 		title: "Childe ascention material farming",
-		description: "join, I will be waiting",
+		description: "oin, I will be waiting",
 		rank: "immortal",
 		tools: {
 			mic: true,
@@ -106,7 +113,7 @@ function Room() {
 	return (
 		<Card withBorder radius="sm" className={classes.card}>
 			<Card.Section className={classes.imageSection}>
-				<Group position="apart" mt="md" spacing={10}>
+				<Group  position="apart" mt="md" spacing={10}>
 					<Avatar
 						src="https://i1.sndcdn.com/artworks-sAsRV00EqUmWoXUQ-OMw9yQ-t500x500.jpg"
 						alt="Tesla Model S"
@@ -162,7 +169,7 @@ function Room() {
 					</div>
 				</Group>
 				<Group position="center" mt="sx" spacing={5} className={classes.time}>
-					<Text color="white" pl={7} pb={1}>
+					<Text color="white" pl={7} pb={1} weight={600}>
 						NOW
 					</Text>
 					<BsClock size={16} fill="#FFF" style={{ marginRight: 5 }} />
@@ -175,33 +182,47 @@ function Room() {
 				</ActionIcon>
 				<Divider my="sx" />
 			</Card.Section>
-
-			<Card.Section className={classes.section} mt="md">
-				<Text size="sm" color="dimmed" className={classes.label}>
-					Basic configuration
-				</Text>
-
-				<Group spacing={8} mb={-8}>
-					{/* {features} */}
-				</Group>
-			</Card.Section>
-
-			<Card.Section className={classes.section}>
-				<Group spacing={30}>
-					<div>
-						<Text size="xl" weight={700} sx={{ lineHeight: 1 }}>
-							$168.00
+			<Group  position="apart" pt="sm">
+				<img
+					 height={36}
+					 width={36}
+					 src="https://raw.githubusercontent.com/Pipaolo/Valorant-Elo-Checker/main/assets/images/20.png"
+					 alt="game logo"
+					 />		
+				<Group direction="column" position="center"
+				spacing={1}   align="start" className={classes.txtContainer}>
+						<Text weight="bold" >
+							{roomDetail.title}
 						</Text>
-						<Text size="sm" color="dimmed" weight={500} sx={{ lineHeight: 1 }} mt={3}>
-							per day
+						<Text >
+							{roomDetail.description}
 						</Text>
-					</div>
-
-					<Button radius="xl" style={{ flex: 1 }}>
-						Rent now
-					</Button>
 				</Group>
-			</Card.Section>
+			</Group>
+			<Group position="apart" pt="sm" mt={17}>
+				<ActionIcon  pt={2} radius="xl" size={30} variant="filled">
+					<IoChatbox size={15}/>
+				</ActionIcon>	
+				<Group position="right"
+				spacing={5}  >
+					<Avatar color="blue" radius="xl">
+        <FiPlus size={24} />
+      </Avatar>
+	  <Avatar color="white" radius="xl">
+        <FiPlus size={24} fill="#FFF" />
+      </Avatar>
+	  <Avatar color="blue" radius="xl">
+        <FiPlus size={24} />
+      </Avatar>
+	  <Avatar color="blue" radius="xl">
+        <FiPlus size={24} />
+      </Avatar>
+					<Button radius="xl" variant="filled"
+					
+					px={22} style={{fontSize:18}}>JOIN</Button>
+				</Group>
+			</Group>
+			
 		</Card>
 	);
 }
