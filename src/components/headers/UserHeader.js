@@ -26,7 +26,7 @@ const useStyles = createStyles((theme) => ({
 	links: {
 		display: "flex",
 		justifyContent: "space-between",
-		justifyContent: "space-around",
+		// justifyContent: "space-around",
 		alignItems: "center",
 		height: "100%",
 		[theme.fn.smallerThan("xs")]: {

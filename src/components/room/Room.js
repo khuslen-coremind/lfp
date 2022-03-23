@@ -22,21 +22,22 @@ import {
 import { FiPlus } from "react-icons/fi";
 
 import { FaDiscord } from "react-icons/fa";
-import {IoChatbox} from "react-icons/io5"
+import { IoChatbox } from "react-icons/io5";
 const useStyles = createStyles((theme) => ({
 	card: {
 		backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
-		maxWidth: 476
+		maxWidth: 476,
+		marginTop: 10,
+		// minHeight: 156,
+		// padding: "10px 8px 7px 10px !important",
 	},
 
 	imageSection: {
-		padding: theme.spacing.sm,
 		display: "flex",
 		alignItems: "center",
-		justifyContent: "space-around",
-		borderBottom: `1px solid ${
-			theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
-		}`,
+		justifyContent: "space-between",
+		maxWidth: "max-content",
+		width: 476,
 	},
 
 	label: {
@@ -63,15 +64,24 @@ const useStyles = createStyles((theme) => ({
 		width: 43,
 		height: 43,
 	},
-	time: {
+	now: {
 		padding: "2px 6px",
 		borderRadius: 30,
 		backgroundColor: "#1CC300",
 	},
-	txtContainer:{
+	time: {
+		padding: "2px 6px",
+		borderRadius: 30,
+		backgroundColor: "#63009F",
+	},
+	txtContainer: {
 		maxWidth: 380,
-		flexGrow:1
-	}
+		flexGrow: 1,
+	},
+	name: {
+		maxWidth: 150,
+		width: 150,
+	},
 }));
 
 // const mockdata = [
@@ -81,7 +91,7 @@ const useStyles = createStyles((theme) => ({
 // 	{ label: "Electric", icon: GasStation },
 // ];
 
-function Room() {
+function Room(props) {
 	const { classes } = useStyles();
 	// const features = mockdata.map((feature) => (
 	// 	<Center key={feature.label}>
@@ -89,31 +99,18 @@ function Room() {
 	// 		<Text size="xs">{feature.label}</Text>
 	// 	</Center>
 	// ));
-	const roomDetail = {
-		userName: "dummbygod",
-		gameName: "dota",
-		title: "Childe ascention material farming",
-		description: "oin, I will be waiting",
-		rank: "immortal",
-		tools: {
-			mic: true,
-			earphone: true,
-			discord: true,
-		},
-		targetTime: "NOW",
-		partyMembersCount: 4,
-		badge: "try harder",
-	};
+	const roomDetail = props.roomDetail;
 	const tools = [
-		<BsHeadphones size={10} fill="#FFFFFF" />,
-		<BsHeadset size={10} fill="#FFFFFF" />,
-		<BsMic size={10} fill="#FFFFFF" />,
+		<BsHeadphones size={10} fill="#FFFFFF" style={{ marginTop: 3 }} />,
+		<BsHeadset size={10} fill="#FFFFFF" style={{ marginTop: 3 }} />,
+		<BsMic size={10} fill="#FFFFFF" style={{ marginTop: 3 }} />,
 		// <FaDiscord size={10} fill="#FFFFFF" />,
 	];
 	return (
-		<Card withBorder radius="sm" className={classes.card}>
-			<Card.Section className={classes.imageSection}>
-				<Group  position="apart" mt="md" spacing={10}>
+		<Card pt={10} pr={8} pb={7} pl={10} withBorder radius="sm" className={classes.card}>
+			<Group className={classes.imageSection} p={0} m={0}>
+				{/* padding: "10px 8px 7px 10px !important", */}
+				<Group position="apart" spacing={10}>
 					<Avatar
 						src="https://i1.sndcdn.com/artworks-sAsRV00EqUmWoXUQ-OMw9yQ-t500x500.jpg"
 						alt="Tesla Model S"
@@ -121,7 +118,7 @@ function Room() {
 						size={43}
 					/>
 					<div>
-						<Group spacing={5}>
+						<Group spacing={5} className={classes.name}>
 							<Text weight={700} size="md">
 								{roomDetail.userName}
 							</Text>
@@ -135,7 +132,7 @@ function Room() {
 								alt="game logo"
 							/>
 						</Group>
-						<Badge size="sm" radius="md">
+						<Badge size="sm" radius="md" color="#515151">
 							{roomDetail.badge}
 						</Badge>
 					</div>
@@ -150,10 +147,10 @@ function Room() {
 											? theme.colors.dark[6]
 											: theme.colors.gray[0],
 									textAlign: "center",
-									padding: "2px 6px",
-									borderRadius: "11px",
-									cursor: "pointer",
+									padding: "0px 6px",
+									borderRadius: 11,
 									backgroundColor: "#615F5F",
+									fontFamily: "monospace",
 								})}>
 								{e}
 							</Box>
@@ -161,68 +158,68 @@ function Room() {
 					})}
 					<div
 						style={{
-							padding: "2px 6px",
+							textAlign: "center",
+							padding: "0px 6px",
 							borderRadius: 11,
 							backgroundColor: "#5865F2",
+							fontFamily: "monospace",
 						}}>
-						<FaDiscord size={10} fill="#FFF" />
+						<FaDiscord style={{ marginTop: 3 }} size={10} fill="#FFFFFF" />
 					</div>
 				</Group>
-				<Group position="center" mt="sx" spacing={5} className={classes.time}>
-					<Text color="white" pl={7} pb={1} weight={600}>
-						NOW
-					</Text>
-					<BsClock size={16} fill="#FFF" style={{ marginRight: 5 }} />
+				<Group spacing={5}>
+					<Group
+						position="center"
+						mt="sx"
+						spacing={5}
+						className={
+							roomDetail.targetTime.toUpperCase() === "NOW" ? classes.now : classes.time
+						}>
+						<Text color="white" pl={7} pb={1} weight={600}>
+							{roomDetail.targetTime}
+						</Text>
+						<BsClock size={16} fill="#FFF" style={{ marginRight: 5 }} />
+					</Group>
+					<ActionIcon variant="hover">
+						<BsThreeDotsVertical
+							size={16}
+
+							// fill="#FFF"
+						/>
+					</ActionIcon>
 				</Group>
-				<ActionIcon variant="hover">
-					<BsThreeDotsVertical
-						size={16}
-						// fill="#FFF"
-					/>
+				{/* <Divider size="xs" /> */}
+			</Group>
+			<Group position="apart" pt="sm">
+				<img height={36} width={36} src={roomDetail.rank} alt="game logo" />
+				<Group
+					direction="column"
+					position="center"
+					spacing={1}
+					align="start"
+					className={classes.txtContainer}>
+					<Text weight="bold">{roomDetail.title.toUpperCase()}</Text>
+					<Text>{roomDetail.description}</Text>
+				</Group>
+			</Group>
+			<Group position="apart" pt="md">
+				<ActionIcon pt={2} radius="xl" size={30} variant="filled">
+					<IoChatbox size={15} />
 				</ActionIcon>
-				<Divider my="sx" />
-			</Card.Section>
-			<Group  position="apart" pt="sm">
-				<img
-					 height={36}
-					 width={36}
-					 src="https://raw.githubusercontent.com/Pipaolo/Valorant-Elo-Checker/main/assets/images/20.png"
-					 alt="game logo"
-					 />		
-				<Group direction="column" position="center"
-				spacing={1}   align="start" className={classes.txtContainer}>
-						<Text weight="bold" >
-							{roomDetail.title}
-						</Text>
-						<Text >
-							{roomDetail.description}
-						</Text>
+				<Group position="right" spacing={5}>
+					{[...Array(roomDetail.partyMembersCount)].map(() => {
+						return (
+							<Avatar color="blue" radius="xl">
+								<FiPlus size={24} />
+							</Avatar>
+						);
+					})}
+
+					<Button radius="xl" variant="filled" px={22} style={{ fontSize: 18 }}>
+						JOIN
+					</Button>
 				</Group>
 			</Group>
-			<Group position="apart" pt="sm" mt={17}>
-				<ActionIcon  pt={2} radius="xl" size={30} variant="filled">
-					<IoChatbox size={15}/>
-				</ActionIcon>	
-				<Group position="right"
-				spacing={5}  >
-					<Avatar color="blue" radius="xl">
-        <FiPlus size={24} />
-      </Avatar>
-	  <Avatar color="white" radius="xl">
-        <FiPlus size={24} fill="#FFF" />
-      </Avatar>
-	  <Avatar color="blue" radius="xl">
-        <FiPlus size={24} />
-      </Avatar>
-	  <Avatar color="blue" radius="xl">
-        <FiPlus size={24} />
-      </Avatar>
-					<Button radius="xl" variant="filled"
-					
-					px={22} style={{fontSize:18}}>JOIN</Button>
-				</Group>
-			</Group>
-			
 		</Card>
 	);
 }
