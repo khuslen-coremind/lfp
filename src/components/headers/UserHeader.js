@@ -12,18 +12,18 @@ import { BsHouse, BsBell } from "react-icons/bs";
 import { FiPlus } from "react-icons/fi";
 import { SiEpicgames } from "react-icons/si";
 import { BiChevronDown } from "react-icons/bi";
-import pfp from "./621.png";
+// import pfp from "./621.png";
 import { useNavigate } from "react-router-dom";
 const useStyles = createStyles((theme) => ({
 	header: {
 		height: "100%",
-		maxWidth: 1320,
+		maxWidth: 1210,
 	},
 
 	links: {
 		display: "flex",
 		justifyContent: "space-between",
-		// justifyContent: "space-around",
+		// justifyContent: "stretch",
 		alignItems: "center",
 		height: "100%",
 		[theme.fn.smallerThan("xs")]: {
@@ -56,7 +56,7 @@ function UserHeader() {
 							<FiPlus size={35} />
 						</ActionIcon>
 					</Group>
-					<Group>
+					<Group spacing={29}>
 						{new Array(6).fill(undefined).map((e, i) => {
 							return (
 								<ActionIcon
@@ -98,7 +98,9 @@ function UserHeader() {
 						<Avatar
 							component="a"
 							href="#"
-							src={pfp}
+							src={
+								"https://i.pinimg.com/736x/ab/75/46/ab754671e4b62d109fcf4d76aec8b4df--anime-manga-saitama.jpg"
+							}
 							alt="pfp"
 							radius="xl"
 							style={{ marginLeft: 80 }}

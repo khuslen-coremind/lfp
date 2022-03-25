@@ -18,6 +18,7 @@ function CreateRoom(props) {
 			<Text size={15} mb={2}>
 				Create a waiting room for your party
 			</Text>
+
 			<Button
 				px={13}
 				pr={14}
