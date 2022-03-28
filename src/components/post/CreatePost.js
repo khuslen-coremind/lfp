@@ -2,6 +2,7 @@ import { TextInput, Group, Button, createStyles, Avatar } from "@mantine/core";
 // import { GasStation, Gauge, ManualGearbox, Users } from "tabler-icons-react";
 import { BsPen } from "react-icons/bs";
 import { IconContext } from "react-icons/lib";
+import { useNavigate } from "react-router-dom";
 const useStyles = createStyles((theme) => ({
 	button: {
 		border: "1px solid #e9ecef",
@@ -12,6 +13,7 @@ const useStyles = createStyles((theme) => ({
 const PostInput = { flexGrow: 1 };
 function CreatePost(props) {
 	const { classes } = useStyles();
+	let navigate = useNavigate();
 	return (
 		<div style={{ width: 618 }}>
 			<Group position="apart" p="xs" className={classes.button} pr={17} pl={16}>
@@ -35,7 +37,8 @@ function CreatePost(props) {
 							}}>
 							<BsPen />
 						</IconContext.Provider>
-					}>
+					}
+					onClick={(e) => navigate("create/post")}>
 					WRITE
 				</Button>
 			</Group>

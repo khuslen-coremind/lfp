@@ -103,7 +103,7 @@ function Room(props) {
 						</Badge>
 					</div>
 				</Group>
-				<Tools />
+				<Tools tools={roomDetail.tools} />
 				<Box sx={{ display: "flex" }}>
 					<LfpTimer roomDetail={roomDetail} />
 					<ActionIcon variant="hover" mr={-4}>

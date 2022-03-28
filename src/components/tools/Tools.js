@@ -17,6 +17,7 @@ function Tools(props) {
 		<BsMic size={10} fill="#FFFFFF" style={{ marginTop: 3 }} />,
 		// <FaDiscord size={10} fill="#FFFFFF" />,
 	];
+
 	return (
 		<Group position="center" mt="sx" spacing={5} style={{ height: "min-content" }}>
 			{tools.map((e, i) => {

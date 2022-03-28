@@ -11,6 +11,7 @@ import DefaultHoc from "./containers/default hoc/DefaultHoc";
 import CreateRoom from "./components/room/CreateRoom";
 import CreatePost from "./components/post/CreatePost";
 import Post from "./components/post/Post";
+import PostForm from "./containers/PostForm/PostForm";
 const useStyles = createStyles((theme) => ({
 	container: {
 		display: "flex",
@@ -57,8 +58,6 @@ const tahh = [
 		rank: "https://raw.githubusercontent.com/Soneliem/WAIUA/master/Demo/images/ranksimg/23.png",
 		tools: {
 			mic: true,
-			earphone: true,
-			discord: true,
 		},
 		targetTime: "NOW",
 		partyMembersCount: 3,
@@ -71,8 +70,6 @@ const tahh = [
 		description: "oin, I will be waitingoin, I will be waitingoin, I will be waiting",
 		rank: "https://raw.githubusercontent.com/Soneliem/WAIUA/master/Demo/images/ranksimg/13.png",
 		tools: {
-			mic: true,
-			earphone: true,
 			discord: true,
 		},
 		targetTime: "21 : 00",
@@ -150,6 +147,15 @@ function App() {
 							{tahh.map((e, i) => {
 								return <Room roomDetail={e} />;
 							})}
+						</Box>
+					</DefaultHoc>
+				}></Route>
+			<Route
+				path="valorant/create/post"
+				element={
+					<DefaultHoc>
+						<Box mt={45}>
+							<PostForm />
 						</Box>
 					</DefaultHoc>
 				}
