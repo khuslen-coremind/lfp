@@ -3,7 +3,7 @@ import {
 	Group,
 	Button,
 	createStyles,
-	Input,
+	Collapse,
 	Avatar,
 	Text,
 	ActionIcon,
@@ -21,6 +21,7 @@ import {
 } from "react-icons/bs";
 import { AiOutlineShareAlt } from "react-icons/ai";
 import { IconContext } from "react-icons/lib";
+import { useState } from "react";
 const useStyles = createStyles((theme) => ({
 	button: {
 		border: "1px solid #e9ecef",
@@ -34,11 +35,28 @@ const useStyles = createStyles((theme) => ({
 	vote: {
 		background: "#00000010",
 	},
+	body: {
+		paddingLeft: 54,
+		paddingTop: theme.spacing.sm,
+	},
 }));
 const PostInput = { flexGrow: 1 };
+
 function Post(props) {
 	const { postData } = props;
 	const { classes } = useStyles();
+	const [opened, setOpen] = useState(false);
+	const collapse = (e) => {
+		setOpen(!opened);
+	};
+	const author = {
+		image:
+			"https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80",
+		name: "loremipsum",
+	};
+	const body =
+		"I use Heroku to host my Node.js application, but MongoDB add-on appears to be too expensive. I consider switching to Digital Ocean VPS to save some cash.";
+	const postedAt = "10 minutes ago";
 	return (
 		<Group
 			// position="apart" p="xs"
@@ -68,7 +86,7 @@ function Post(props) {
 				sx={{ flexGrow: 1 }}
 				// sx={{ maxHeight: 153 }}
 			>
-				<Group direction="column" sx={{ flexGrow: 1 }}>
+				<Group direction="column" sx={{ flexGrow: 1, width: "min-content" }}>
 					<Group direction="column" spacing={2}>
 						<Text weight="lighter" size="sm">
 							Posted by {postData.userName} <b>{postData.postedOn}</b> ago
@@ -87,7 +105,8 @@ function Post(props) {
 							<Button
 								px={11}
 								leftIcon={<BsChatSquare style={{ marginTop: 1 }} />}
-								variant="subtle">
+								variant="subtle"
+								onClick={collapse}>
 								{postData.comments.length} Comments
 							</Button>
 							<Button px={11} leftIcon={<AiOutlineShareAlt />} variant="subtle">
@@ -101,21 +120,25 @@ function Post(props) {
 							Report
 						</Button>
 					</Group>
+					<Collapse in={opened} sx={{ maxWidth: "95%" }}>
+						<div>
+							<Group>
+								<Avatar src={author.image} alt={author.name} radius="sm" size={25} />
+								<Text size="md" pb="xs" weight={500}>
+									{author.name}
+								</Text>
+								<Text size="xs" color="dimmed" pb="xs">
+									{postedAt}
+								</Text>
+								<ActionIcon></ActionIcon>
+							</Group>
+							<Text className={classes.body} size="sm">
+								{body}
+							</Text>
+						</div>
+					</Collapse>
 				</Group>
 			</Group>
-			{/* <Button
-				px={15}
-				pr={14}
-				rightIcon={
-					<IconContext.Provider
-						value={{
-							style: { marginLeft: -2, fontSize: 13 },
-						}}>
-						<BsPen />
-					</IconContext.Provider>
-				}>
-				WRITE
-			</Button> */}
 		</Group>
 	);
 }
