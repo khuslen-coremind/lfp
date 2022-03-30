@@ -161,7 +161,11 @@ function List(props) {
 	));
 	return (
 		<Box>
-			<StyledAccordion initialItem={0}>{items}</StyledAccordion>
+			<StyledAccordion
+			// initialItem={2}
+			>
+				{items}
+			</StyledAccordion>
 			<Group>
 				<Button
 					fullWidth

@@ -5,7 +5,11 @@ export const dropzoneChildren = (status, theme) => (
 	<Group
 		position="center"
 		spacing="xl"
-		style={{ minHeight: 165, width: "50vw", pointerEvents: "none" }}>
+		style={{
+			minHeight: 165,
+			width: "43.3vw",
+			pointerEvents: "none",
+		}}>
 		<div style={{ textAlign: "center" }}>
 			<Text size="xl" inline>
 				Drag images and videos here or <b style={{ color: "#7280FA" }}>Browse</b>
