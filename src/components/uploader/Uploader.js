@@ -7,7 +7,7 @@ export const dropzoneChildren = (status, theme) => (
 		spacing="xl"
 		style={{
 			minHeight: 165,
-			width: "43.3vw",
+			width: "42.1vw",
 			pointerEvents: "none",
 		}}>
 		<div style={{ textAlign: "center" }}>

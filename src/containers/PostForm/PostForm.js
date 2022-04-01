@@ -1,6 +1,5 @@
 // import logo from "./logo.svg";
 import {
-<<<<<<< HEAD
 	createStyles,
 	Text,
 	Paper,
@@ -30,110 +29,64 @@ function PostForm(props) {
 	const [value, onChange] = useState(initialValue);
 
 	return (
-		<div>
-			<Container>
-				<Group direction="column" style={{ width: "100%" }} position="apart">
-					<Group style={{ width: "100%" }} position="apart">
-						<Text>
-							Share <b>anything</b> related to the community
-						</Text>
-						<Select
-							style={{ flexGrow: 0.8 }}
-							variant="filled"
-							data={[
-								{ value: 1, label: "Valorant" },
-								{ value: 2, label: "CS:GO" },
-								{ value: 3, label: "Dota 2" },
-								{ value: 4, label: "Genshin Impact" },
-							]}
-						/>
-					</Group>
-					{/* <label htmlFor="title">
-				{" "}
-				<Text weight="bold">Title</Text>
-			</label> */}
-					<TextInput
-						// id="title"
-						mt={40}
-						size="lg"
-						label="Title"
-						sx={{ width: "100%" }}
-						placeholder=""
+		<Container style={{ display: "flex", flexDirection: "row" }}>
+			<Group direction="column" style={{ width: "100%" }} position="apart">
+				<Group style={{ width: "100%" }} position="apart">
+					<Text>
+						Share <b>anything</b> related to the community
+					</Text>
+					<Select
+						style={{ flexGrow: 0.8 }}
+						variant="filled"
+						data={[
+							{ value: 1, label: "Valorant" },
+							{ value: 2, label: "CS:GO" },
+							{ value: 3, label: "Dota 2" },
+							{ value: 4, label: "Genshin Impact" },
+						]}
 					/>
-					<Tabs mt={35}>
-						<Tabs.Tab
-							style={{ fontSize: 16, fontWeight: "bold" }}
-							label="Text"
-							icon={<BsCardText size={16} />}>
-							<RichTextEditor value={value} onChange={onChange} />
-						</Tabs.Tab>
-						<Tabs.Tab
-							style={{ fontSize: 16, fontWeight: "bold" }}
-							label="Images & videos"
-							icon={<BsImage size={16} />}>
-							<Uploader />
-						</Tabs.Tab>
-					</Tabs>
-					<Group sx={{ justifySelf: "end", alignSelf: "end" }}>
-						<Button variant="outline" onClick={handlePrevious}>
-							CANCEL
-						</Button>
-						<Button variant="outline">SAVE DRAFT</Button>
-						<Button variant="filled">POST</Button>
-					</Group>
 				</Group>
-			</Container>
-
-			<MyDrafts />
-			<br />
-			<Rules />
-		</div>
-	);
-=======
-  createStyles,
-  Text,
-  Box,
-  Group,
-  Select,
-  TextInput,
-  Tabs,
-} from "@mantine/core";
-// import DefaultHeader from "./components/headers/DefaultHeader";
-import { BsCardText, BsImage } from "react-icons/bs";
-const useStyles = createStyles((theme) => ({
-  container: {
-    display: "flex",
-    justifyContent: "space-around",
-    maxWidth: 1320,
-  },
-}));
-function PostForm(props) {
-  const { classes } = useStyles();
-  return (
-    <Group direction="column">
-      <Group>
-        <Text>
-          Share <b>anything</b> related to the community
-        </Text>
-      </Group>
-      {/* <label htmlFor="title">
+				{/* <label htmlFor="title">
 				{" "}
 				<Text weight="bold">Title</Text>
 			</label> */}
-      <TextInput
-        // id="title"
-        width="100%"
-      ></TextInput>
-      <Tabs>
-        <Tabs.Tab label="Text" icon={<BsCardText size={14} />}></Tabs.Tab>
-        <Tabs.Tab
-          label="Images & videos"
-          icon={<BsImage size={14} />}
-        ></Tabs.Tab>
-      </Tabs>
-    </Group>
-  );
->>>>>>> 85a5591c2976b2543d0edcd3e391fc4cf0511eaf
+				<TextInput
+					// id="title"
+					mt={40}
+					size="lg"
+					label="Title"
+					sx={{ width: "100%" }}
+					placeholder=""
+				/>
+				<Tabs mt={35}>
+					<Tabs.Tab
+						style={{ fontSize: 16, fontWeight: "bold" }}
+						label="Text"
+						icon={<BsCardText size={16} />}>
+						<RichTextEditor value={value} onChange={onChange} sx={{ minHeight: 200 }} />
+					</Tabs.Tab>
+					<Tabs.Tab
+						style={{ fontSize: 16, fontWeight: "bold" }}
+						label="Images & videos"
+						icon={<BsImage size={16} />}>
+						<Uploader />
+					</Tabs.Tab>
+				</Tabs>
+				<Group sx={{ justifySelf: "end", alignSelf: "end" }}>
+					<Button variant="outline" onClick={handlePrevious}>
+						CANCEL
+					</Button>
+					<Button variant="outline">SAVE DRAFT</Button>
+					<Button variant="filled">POST</Button>
+				</Group>
+			</Group>
+			<Container>
+				<MyDrafts />
+				<br />
+				<Rules />
+			</Container>
+		</Container>
+	);
 }
 const MyDrafts = () => {
 	return (
@@ -165,7 +118,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 			backgroundColor: "transparent",
 			//   opacity: 1,
 		},
-		padding: "12px 17.8px 12px 12px",
+		padding: "12px 17.8px 11px 10px",
 	},
 
 	item: {
@@ -177,7 +130,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 		borderColor:
 			theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[3],
 		marginBottom: 8,
-		fontSize: 12,
 		// backgroundColor: "#2C384B",
 	},
 
@@ -215,14 +167,14 @@ function StyledAccordion(props) {
 function AccordionLabel({ title, i }) {
 	return (
 		<Group noWrap>
-			<Text>
-				{i}.{title}
+			<Text size="xs">
+				{i}. {title}
 			</Text>
 		</Group>
 	);
 }
 const items = rules.map((item, i) => (
-	<Accordion.Item label={<AccordionLabel {...item} />} key={item.title}>
+	<Accordion.Item label={<AccordionLabel {...item} i={i + 1} />} key={item.title}>
 		{item.content}
 	</Accordion.Item>
 ));
