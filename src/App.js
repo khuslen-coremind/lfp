@@ -12,6 +12,7 @@ import CreateRoom from "./components/room/CreateRoom";
 import CreatePost from "./components/post/CreatePost";
 import Post from "./components/post/Post";
 import PostForm from "./containers/PostForm/PostForm";
+import RoomForm from "./containers/RoomForm/RoomForm";
 const useStyles = createStyles((theme) => ({
   container: {
     display: "flex",
@@ -159,6 +160,16 @@ function App() {
           <DefaultHoc>
             <Box mt={45}>
               <PostForm />
+            </Box>
+          </DefaultHoc>
+        }
+      />
+      <Route
+        path="valorant/create/room"
+        element={
+          <DefaultHoc>
+            <Box mt={45}>
+              <RoomForm />
             </Box>
           </DefaultHoc>
         }

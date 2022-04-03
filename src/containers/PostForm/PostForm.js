@@ -96,8 +96,10 @@ function PostForm(props) {
 }
 const MyDrafts = () => {
   return (
-    <Paper style={{ width: 245 }} shadow="xs" p="lg" pt={20}>
-      <Text weight={700}>My drafts</Text>
+    <Paper style={{ width: 245 }} shadow="xs" px="sm" py={20}>
+      <Text weight={700} pl={6}>
+        My drafts
+      </Text>
       <Divider size="xs" my={13} />
       <Text size="xs" sx={{ textAlign: "center" }}>
         Your drafts will be here
@@ -177,10 +179,15 @@ function StyledAccordion(props) {
 }
 function AccordionLabel({ title, i }) {
   return (
-    <Group noWrap>
-      <Text size="xs">
-        {i}. {title}
+    <Group noWrap spacing="xs" pr={0}>
+      <Text
+        size="xs"
+        //mb="auto"
+        mb="auto"
+      >
+        {i}.
       </Text>
+      <Text size="xs">{title}</Text>
     </Group>
   );
 }
@@ -189,13 +196,15 @@ const items = rules.map((item, i) => (
     label={<AccordionLabel {...item} i={i + 1} />}
     key={item.title}
   >
-    {item.content}
+    <Text size="sm">{item.content}</Text>
   </Accordion.Item>
 ));
 const Rules = () => {
   return (
-    <Paper style={{ width: 245 }} shadow="xs" p="lg" pt={20}>
-      <Text weight={700}>Community post rules</Text>
+    <Paper style={{ width: 245 }} shadow="xs" px="sm" pt={20}>
+      <Text weight={700} pl={6}>
+        Community post rules
+      </Text>
       <StyledAccordion iconSize={12}>{items}</StyledAccordion>
     </Paper>
   );
