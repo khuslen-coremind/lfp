@@ -8,6 +8,8 @@ import {
   Button,
   Container,
   Box,
+  Textarea,
+  NumberInput,
 } from "@mantine/core";
 import { useState } from "react";
 import { RichTextEditor } from "@mantine/rte";
@@ -90,10 +92,12 @@ function RoomForm(props) {
         style={{ width: "100%", maxWidth: 399 }}
         position="apart"
       >
-        <Group style={{ width: "100%" }} position="apart">
-          <Text>
-            Share <b>anything</b> related to the community
-          </Text>
+        <Text>
+          Fill in the form to make a <b>waiting room</b>
+        </Text>
+
+        <Group>
+          <Text>I wish to play</Text>
           <Select
             style={{ flexGrow: 0.8 }}
             variant="filled"
@@ -105,55 +109,55 @@ function RoomForm(props) {
             ]}
           />
         </Group>
-        {/* <label htmlFor="title">
-                  {" "}
-                  <Text weight="bold">Title</Text>
-              </label> */}
-        <TextInput
-          // id="title"
-          mt={40}
-          size="lg"
-          label="Title"
-          sx={{ width: "100%" }}
+        <Group>
+          <Text>My rank is</Text>
+          <Select
+            style={{ flexGrow: 0.8 }}
+            variant="filled"
+            data={[
+              { value: 1, label: "Valorant" },
+              { value: 2, label: "CS:GO" },
+              { value: 3, label: "Dota 2" },
+              { value: 4, label: "Genshin Impact" },
+            ]}
+          />
+        </Group>
+        <Group>
+          <Text>I need</Text>
+          <NumberInput
+            defaultValue={1}
+            variant="filled"
+            radius="md"
+            hideControls
+          />
+          <Text>player(s)</Text>
+        </Group>
+        <TextInput label="Waiting room title" placeholder="" />
+        <Textarea
+          label="Waiting room description"
           placeholder=""
+          autosize
+          maxLength={90}
+          minRows={2}
+          maxRows={4}
         />
-        <Tabs mt={35}>
-          <Tabs.Tab
-            style={{ fontSize: 16, fontWeight: "bold" }}
-            label="Text"
-            icon={<BsCardText size={16} />}
-          >
-            <RichTextEditor
-              value={value}
-              onChange={onChange}
-              sx={{ minHeight: 200 }}
-            />
-          </Tabs.Tab>
-          <Tabs.Tab
-            style={{ fontSize: 16, fontWeight: "bold" }}
-            label="Images & videos"
-            icon={<BsImage size={16} />}
-          >
-            <Uploader />
-          </Tabs.Tab>
-        </Tabs>
+
         <Group sx={{ justifySelf: "end", alignSelf: "end" }}>
           <Button variant="outline" onClick={handlePrevious}>
             CANCEL
           </Button>
-          <Button variant="outline">SAVE DRAFT</Button>
           <Button variant="filled">POST</Button>
         </Group>
       </Group>
-      <Group direction="column">
+      <Room roomDetail={tahh[0]} />
+      {/* <Group direction="column">
         <Text mb={16}>Recent Activities</Text>
-        <Room roomDetail={tahh[0]} />
         <Room roomDetail={tahh[1]} />
         <Room roomDetail={tahh[2]} />
         <Room roomDetail={tahh[3]} />
         <Room roomDetail={tahh[2]} />
         <Room roomDetail={tahh[3]} />
-      </Group>
+      </Group> */}
     </Container>
   );
 }
