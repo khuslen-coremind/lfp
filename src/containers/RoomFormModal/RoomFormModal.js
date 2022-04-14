@@ -22,7 +22,15 @@ import { TimeInput } from "@mantine/dates";
 import { useState } from "react";
 import { RichTextEditor } from "@mantine/rte";
 // import DefaultHeader from "./components/headers/DefaultHeader";
-import { BsClock, BsCardText, BsImage, BsChevronDown } from "react-icons/bs";
+import {
+	BsClock,
+	BsController,
+	BsPeople,
+	BsInfoSquare,
+	BsTags,
+	BsGear,
+	BsChevronDown,
+} from "react-icons/bs";
 import Uploader from "../../components/uploader/Uploader";
 import { useNavigate } from "react-router-dom";
 import Room from "../../components/room/Room";
@@ -114,107 +122,127 @@ function RoomFormModal({ opened, ...props }) {
 				onClose={() => setModal(false)}
 				title=""
 				size="lg"
+				styles={{ header: { marginBottom: 0 } }}
 				// sx={{ width: "" }}
 			>
 				<Group direction="column" position="center">
 					<Group spacing="xs" mt={2} direction="column">
-						<Text pl="xs">GAME INFO</Text>
-						<Paper shadow="lg" p="lg" style={{ width: "500px" }}>
-							<Group noWrap spacing="xl">
-								<Group>
-									<Select
-										label="I wish to play"
-										id="game_select"
-										defaultValue="PUBG Mobile"
-										itemComponent={GameSelectItem}
-										data={GameData}
-										rightSection={<BsChevronDown size={14} />}
-										rightSectionWidth={30}
-										styles={{
-											rightSection: {
-												pointerEvents: "none",
-											},
-											label: { paddingBottom: 10 },
-										}}
-										maxDropdownHeight={400}
-									/>
-								</Group>
-								<Group position="apart">
-									<Select
-										id="rank_select"
-										required
-										label="My rank is "
-										itemComponent={RankSelectItem}
-										style={{ flexGrow: 0.8 }}
-										data={RankData}
-										rightSection={<BsChevronDown size={14} />}
-										rightSectionWidth={30}
-										styles={{
-											rightSection: {
-												pointerEvents: "none",
-											},
-											label: { paddingBottom: 10 },
-										}}
-									/>
-								</Group>
-							</Group>
-						</Paper>
-					</Group>
-					<Group spacing="xs" mt={2} direction="column">
-						<Text pl="xs">PARTY INFO</Text>
-						<Paper shadow="lg" p="lg" style={{ width: "500px" }}>
-							<Group spacing="xl" position="apart">
-								<Group spacing="xs">
-									<Text size="sm" weight={500}>
-										I need
-									</Text>
-									<NumberInput
-										required
-										type="number"
-										hideControls
-										defaultValue={1}
-										min={1}
-										max={9}
-										maxLength={1}
-										styles={{ input: { width: 45, textAlign: "center" } }}
-									/>
-									<Text size="sm">player(s)</Text>
-								</Group>
-								<Group spacing="xs">
-									<Button leftIcon={<BsClock />} variant="outline" onClick={() => {}}>
-										NOW
-									</Button>
+						<Group ml="lg">
+							<BsController />
+							<Text>GAME INFO</Text>
+						</Group>
 
-									<Text size="sm">or</Text>
-									<Text size="sm" weight={500}>
-										at
-									</Text>
-									<TimeInput
-										hoursLabel="Hours"
-										minutesLabel="Minutes"
-										value={roomTime}
-										onChange={setRoomTime}
-									/>
-								</Group>
-							</Group>
-						</Paper>
+						<Group
+							pt="xs"
+							p="lg"
+							style={{ width: "560px" }}
+							spacing="xl"
+							position="apart"
+							grow={1}>
+							<Select
+								label="I wish to play"
+								id="game_select"
+								defaultValue="PUBG Mobile"
+								itemComponent={GameSelectItem}
+								data={GameData}
+								rightSection={<BsChevronDown size={14} />}
+								rightSectionWidth={30}
+								styles={{
+									rightSection: {
+										pointerEvents: "none",
+									},
+									label: { paddingBottom: 10 },
+								}}
+								maxDropdownHeight={400}
+							/>
+							<Select
+								id="rank_select"
+								required
+								label="My rank is "
+								itemComponent={RankSelectItem}
+								data={RankData}
+								rightSection={<BsChevronDown size={14} />}
+								rightSectionWidth={30}
+								styles={{
+									rightSection: {
+										pointerEvents: "none",
+									},
+									label: { paddingBottom: 10 },
+								}}
+							/>
+						</Group>
 					</Group>
 					<Group spacing="xs" mt={2} direction="column">
-						<Text pl="xs">ROOM INFO</Text>
-						<Paper shadow="lg" p="lg" style={{ width: "500px" }}>
-							<TextInput label="Waiting room title" placeholder="" required />
+						<Group ml="lg">
+							<BsPeople />
+							<Text>PARTY INFO</Text>
+						</Group>
+
+						<Group pt="xs" p="lg" style={{ width: "560px" }} position="apart">
+							<Group spacing="xs">
+								<Text size="sm" weight={500}>
+									I need
+								</Text>
+								<NumberInput
+									required
+									type="number"
+									hideControls
+									defaultValue={1}
+									min={1}
+									max={9}
+									maxLength={1}
+									styles={{ input: { width: 45, textAlign: "center" } }}
+								/>
+								<Text size="sm">player(s)</Text>
+							</Group>
+							<Group spacing="xs">
+								<Button leftIcon={<BsClock />} variant="outline" onClick={() => {}}>
+									NOW
+								</Button>
+
+								<Text size="sm">or</Text>
+								<Text size="sm" weight={500}>
+									at
+								</Text>
+								<TimeInput
+									hoursLabel="Hours"
+									minutesLabel="Minutes"
+									value={roomTime}
+									onChange={setRoomTime}
+								/>
+							</Group>
+						</Group>
+					</Group>
+					{/* <Divider size="xs" /> */}
+
+					<Group spacing="xs" mt={2} direction="column">
+						<Group ml="lg">
+							<BsInfoSquare />
+							<Text>ROOM INFO</Text>
+						</Group>
+						<Group pt="xs" p="lg" style={{ width: "560px" }} direction="column">
+							<TextInput
+								label="Waiting room title"
+								placeholder=""
+								required
+								style={{ width: "100%" }}
+							/>
 							<Textarea
 								required
-								mt="lg"
+								mt="md"
 								label="Waiting room description"
 								placeholder=""
 								autosize
 								maxLength={90}
 								minRows={2}
 								maxRows={4}
+								style={{ width: "100%" }}
 							/>
-							<Divider size="xs" mt="xl" mb="md" />
+
 							<Group sx={{ justifyContent: "space-around" }}>
+								{/* <Box ml="lg">
+									<BsTags />
+								</Box> */}
 								<Box shadow="lg" p="xs">
 									<label htmlFor="exp">
 										<Text size="sm" weight={500}>
@@ -239,29 +267,31 @@ function RoomFormModal({ opened, ...props }) {
 									</Chips>
 								</Box>
 							</Group>
-						</Paper>
+						</Group>
 					</Group>
 					<Group spacing="xs" mt={2} direction="column">
-						<Text pl="xs">UTILS INFO</Text>
-						<Paper shadow="lg" p="lg" style={{ width: "500px" }}>
+						<Group ml="lg">
+							<BsGear />
+							<Text>UTILS INFO</Text>
+						</Group>
+						<Group pt="xs" p="lg" style={{ width: "560px" }}>
 							<label htmlFor="utils">
 								<Text size="sm" weight={500}>
 									I'm willing to use{" "}
 								</Text>
 							</label>
-							<Chips multiple id="utils" mt="sm">
+							<Chips multiple id="utils" mt="xs">
 								<Chip value="react">Only mic</Chip>
 								<Chip value="h">Only headphone</Chip>
 								<Chip value="eact">Headset</Chip>
 								<Chip value="discord">Discord</Chip>
 							</Chips>
-						</Paper>
+						</Group>
 					</Group>
-					<Group sx={{ justifySelf: "end", alignSelf: "end" }}>
-						<Button variant="subtle" onClick={handlePrevious}>
-							CANCEL
+					<Group sx={{ width: "95%" }} mt="xs">
+						<Button size="sm" variant="filled" sx={{ width: "100%" }}>
+							CREATE A ROOM
 						</Button>
-						<Button variant="filled">CREATE</Button>
 					</Group>
 				</Group>
 			</Modal>
