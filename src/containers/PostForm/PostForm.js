@@ -7,15 +7,17 @@ import {
   Select,
   TextInput,
   Tabs,
+  Box,
   Accordion,
   Button,
   Container,
   Divider,
+  Avatar,
 } from "@mantine/core";
 import { useState } from "react";
 import { RichTextEditor } from "@mantine/rte";
 // import DefaultHeader from "./components/headers/DefaultHeader";
-import { BsCardText, BsImage } from "react-icons/bs";
+import { BsCardText, BsImage, BsChevronDown } from "react-icons/bs";
 import Uploader from "../../components/uploader/Uploader";
 import { useNavigate } from "react-router-dom";
 
@@ -27,23 +29,42 @@ function PostForm(props) {
   let navigate = useNavigate();
   const initialValue = "<p>any <a >link</a>, plain text</p>";
   const [value, onChange] = useState(initialValue);
+  const GameSelectItem = ({ image, label, ...others }) => (
+    <div {...others}>
+      <Group noWrap>
+        <Avatar src={image} />
 
+        <div>
+          <Text size="sm">{label}</Text>
+        </div>
+      </Group>
+    </div>
+  );
+  const gameData = [
+    { value: 1, label: "Valorant" },
+    { value: 2, label: "CS:GO" },
+    { value: 3, label: "Dota 2" },
+    { value: 4, label: "Genshin Impact" },
+  ];
   return (
     <Container style={{ display: "flex", flexDirection: "row" }}>
-      <Group direction="column" style={{ width: "100%" }} position="apart">
+      <Group direction="column" style={{ width: 600 }} position="apart" mr="xl">
         <Group style={{ width: "100%" }} position="apart">
           <Text>
             Share <b>anything</b> related to the community
           </Text>
           <Select
-            style={{ flexGrow: 0.8 }}
-            variant="filled"
-            data={[
-              { value: 1, label: "Valorant" },
-              { value: 2, label: "CS:GO" },
-              { value: 3, label: "Dota 2" },
-              { value: 4, label: "Genshin Impact" },
-            ]}
+            itemComponent={GameSelectItem}
+            data={gameData}
+            rightSection={<BsChevronDown size={14} />}
+            rightSectionWidth={30}
+            styles={{
+              rightSection: {
+                pointerEvents: "none",
+              },
+              label: { paddingBottom: 10 },
+            }}
+            maxDropdownHeight={400}
           />
         </Group>
         {/* <label htmlFor="title">
@@ -52,30 +73,41 @@ function PostForm(props) {
 			</label> */}
         <TextInput
           // id="title"
-          mt={40}
+          mt={35}
           size="lg"
           label="Title"
           sx={{ width: "100%" }}
           placeholder=""
         />
-        <Tabs mt={35}>
+        <Tabs mt={10} sx={{ width: "100%" }}>
           <Tabs.Tab
             style={{ fontSize: 16, fontWeight: "bold" }}
             label="Text"
             icon={<BsCardText size={16} />}
           >
-            <RichTextEditor
-              value={value}
-              onChange={onChange}
-              sx={{ minHeight: 200 }}
-            />
+            <Box sx={{ width: "100%", minHeight: 300 }}>
+              <RichTextEditor
+                value={value}
+                onChange={onChange}
+                controls={[
+                  ["bold", "italic", "underline", "strike", "clean "],
+                  ["h1", "h2", "h3", "h4"],
+                  ["unorderedList", "orderedList "],
+                  ["link", "image ", "video", "embed", "blockquote"],
+                  ["alignLeft", "alignCenter", "alignRight"],
+                ]}
+                sx={{ minHeight: 250 }}
+              />
+            </Box>
           </Tabs.Tab>
           <Tabs.Tab
             style={{ fontSize: 16, fontWeight: "bold" }}
             label="Images & videos"
             icon={<BsImage size={16} />}
           >
-            <Uploader />
+            <Box sx={{ width: "100%", minHeight: 300 }}>
+              <Uploader />
+            </Box>
           </Tabs.Tab>
         </Tabs>
         <Group sx={{ justifySelf: "end", alignSelf: "end" }}>

@@ -6,8 +6,6 @@ export const dropzoneChildren = (status, theme) => (
     position="center"
     spacing="xl"
     style={{
-      minHeight: 165,
-      width: "45.44vw",
       pointerEvents: "none",
     }}
   >
@@ -23,13 +21,14 @@ export const dropzoneChildren = (status, theme) => (
   </Group>
 );
 
-function Uploader() {
+function Uploader(props) {
   return (
     <Dropzone
       onDrop={(files) => console.log("accepted files", files)}
       onReject={(files) => console.log("rejected files", files)}
       maxSize={3 * 1024 ** 2}
       accept={IMAGE_MIME_TYPE}
+      sx={{ height: 250, display: "flex", justifyContent: "center" }}
     >
       {(status) => dropzoneChildren(status)}
     </Dropzone>
