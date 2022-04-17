@@ -122,20 +122,20 @@ function RoomFormModal({ opened, ...props }) {
 				onClose={() => setModal(false)}
 				title=""
 				size="lg"
-				styles={{ header: { marginBottom: 0 } }}
+				styles={{ header: { marginBottom: -20 } }}
 				// sx={{ width: "" }}
 			>
 				<Group direction="column" position="center">
-					<Group spacing="xs" mt={2} direction="column">
+					<Group spacing="xs" mt={2} direction="column" sx={{ width: "100%" }}>
 						<Group ml="lg">
-							<BsController />
-							<Text>GAME INFO</Text>
+							<BsController size={20} />
+							<Text size="lg">GAME INFO</Text>
 						</Group>
 
 						<Group
 							pt="xs"
-							p="lg"
-							style={{ width: "560px" }}
+							px="lg"
+							style={{ width: "95%", alignSelf: "center" }}
 							spacing="xl"
 							position="apart"
 							grow={1}>
@@ -172,13 +172,17 @@ function RoomFormModal({ opened, ...props }) {
 							/>
 						</Group>
 					</Group>
-					<Group spacing="xs" mt={2} direction="column">
-						<Group ml="lg">
-							<BsPeople />
-							<Text>PARTY INFO</Text>
+					<Group spacing="xs" mt={2} direction="column" sx={{ width: "100%" }}>
+						<Group ml="sm">
+							<BsPeople size={20} />
+							<Text size="lg">PARTY INFO</Text>
 						</Group>
 
-						<Group pt="xs" p="lg" style={{ width: "560px" }} position="apart">
+						<Group
+							pt="xs"
+							p="lg"
+							style={{ width: "95%", alignSelf: "center" }}
+							position="apart">
 							<Group spacing="xs">
 								<Text size="sm" weight={500}>
 									I need
@@ -215,12 +219,16 @@ function RoomFormModal({ opened, ...props }) {
 					</Group>
 					{/* <Divider size="xs" /> */}
 
-					<Group spacing="xs" mt={2} direction="column">
-						<Group ml="lg">
-							<BsInfoSquare />
-							<Text>ROOM INFO</Text>
+					<Group spacing="xs" mt={2} direction="column" sx={{ width: "100%" }}>
+						<Group ml="sm">
+							<BsInfoSquare size={20} />
+							<Text size="lg">ROOM INFO</Text>
 						</Group>
-						<Group pt="xs" p="lg" style={{ width: "560px" }} direction="column">
+						<Group
+							pt="xs"
+							p="lg"
+							style={{ width: "95%", alignSelf: "center" }}
+							direction="column">
 							<TextInput
 								label="Waiting room title"
 								placeholder=""
@@ -243,7 +251,7 @@ function RoomFormModal({ opened, ...props }) {
 								{/* <Box ml="lg">
 									<BsTags />
 								</Box> */}
-								<Box shadow="lg" p="xs">
+								<Box shadow="lg" p="xs" pt={0}>
 									<label htmlFor="exp">
 										<Text size="sm" weight={500}>
 											Experience{" "}
@@ -251,10 +259,10 @@ function RoomFormModal({ opened, ...props }) {
 									</label>
 									<Chips multiple id="exp" mt="sm" size="xs">
 										<Chip value="react">Newbie</Chip>
-										<Chip value="h">Pro</Chip>
+										<Chip value="h">Pro xd</Chip>
 									</Chips>
 								</Box>
-								<Box shadow="lg" p="xs">
+								<Box shadow="lg" p="xs" pt={0}>
 									<label htmlFor="preference">
 										<Text size="sm" weight={500}>
 											Preference{" "}
@@ -269,12 +277,12 @@ function RoomFormModal({ opened, ...props }) {
 							</Group>
 						</Group>
 					</Group>
-					<Group spacing="xs" mt={2} direction="column">
-						<Group ml="lg">
-							<BsGear />
-							<Text>UTILS INFO</Text>
+					<Group spacing="xs" mt={2} direction="column" sx={{ width: "100%" }}>
+						<Group ml="sm">
+							<BsGear size={20} />
+							<Text size="lg">UTILS INFO</Text>
 						</Group>
-						<Group pt="xs" p="lg" style={{ width: "560px" }}>
+						<Group pt="xs" p="lg" style={{ width: "95%", alignSelf: "center" }}>
 							<label htmlFor="utils">
 								<Text size="sm" weight={500}>
 									I'm willing to use{" "}
