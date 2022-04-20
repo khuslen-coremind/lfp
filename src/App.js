@@ -14,6 +14,7 @@ import Post from "./components/post/Post";
 import PostForm from "./containers/PostForm/PostForm";
 import RoomFormModal from "./containers/RoomFormModal/RoomFormModal";
 import Room from "./containers/room/Room";
+import ContainedHoc from "./containers/contained/ContainedHoc";
 const useStyles = createStyles((theme) => ({
   container: {
     display: "flex",
@@ -168,11 +169,11 @@ function App() {
       <Route
         path="room/12"
         element={
-          <DefaultHoc>
-            <Box mt={45}>
+          <ContainedHoc>
+            <Box mt={20}>
               <Room />
             </Box>
-          </DefaultHoc>
+          </ContainedHoc>
         }
       />
       {/* <Route
