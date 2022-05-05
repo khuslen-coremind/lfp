@@ -165,6 +165,27 @@ function App() {
 				}
 			/>
 			<Route
+				path="create/post"
+				element={
+					<DefaultHoc>
+						<Box mt={45}>
+							<PostForm />
+						</Box>
+					</DefaultHoc>
+				}
+			/>
+			<Route
+				path="create/room"
+				element={
+					<DefaultHoc>
+						<Box mt={45}>
+							<RoomFormModal />
+						</Box>
+					</DefaultHoc>
+				}
+			/>
+
+			<Route
 				path="room/12"
 				element={
 					<ContainedHoc>
