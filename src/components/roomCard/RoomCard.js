@@ -3,6 +3,7 @@ import {
 	Text,
 	Group,
 	Badge,
+	Menu,
 	createStyles,
 	ActionIcon,
 	Button,
@@ -13,6 +14,8 @@ import {
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FiPlus } from "react-icons/fi";
 import { IoChatbox } from "react-icons/io5";
+import { AiOutlineLink } from "react-icons/ai";
+import { MdReportProblem } from "react-icons/md";
 import Tools from "../tools/Tools";
 import LfpTimer from "../lfpTimer/LfpTimer";
 import { useNavigate } from "react-router-dom";
@@ -111,11 +114,29 @@ function RoomCard(props) {
 				<Tools tools={roomDetail.tools} />
 				<Box sx={{ display: "flex" }}>
 					<LfpTimer roomDetail={roomDetail} />
-					<ActionIcon variant="hover" mr={-4}>
-						<BsThreeDotsVertical
-							size={16} // fill="#FFF"
-						/>
-					</ActionIcon>
+					<Menu
+						withArrow
+						placement="center"
+						// position="right"
+						control={
+							<ActionIcon variant="hover" mr={-4}>
+								<BsThreeDotsVertical
+									size={16} // fill="#FFF"
+								/>
+							</ActionIcon>
+						}>
+						<Menu.Item icon={<AiOutlineLink size={14} />}>Room link</Menu.Item>
+						<Menu.Item
+							color="red"
+							icon={
+								<MdReportProblem
+									size={14}
+									// component={Link} to="/hello"
+								/>
+							}>
+							Report room
+						</Menu.Item>
+					</Menu>
 				</Box>
 
 				{/* <Divider size="xs" /> */}
