@@ -1,0 +1,19 @@
+
+
+.emptyRoom{
+    padding: 0 15px;
+    height: 580px;
+    max-height: 580px;
+    display: flex ; 
+    justify-content: center;
+    align-items: center;
+}
+
+.messageRoom{
+    padding: 0 15px;
+    height: 580px;
+    max-height: 580px;
+    display: flex ; 
+    flex-flow: column wrap;
+   
+}
