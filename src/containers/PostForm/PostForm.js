@@ -20,7 +20,13 @@ import { RichTextEditor } from "@mantine/rte";
 import { BsCardText, BsImage, BsChevronDown } from "react-icons/bs";
 import Uploader from "../../components/uploader/Uploader";
 import { useNavigate } from "react-router-dom";
-
+import dota2Svg from "../../images/gamesLogo/dota2.svg";
+import lolSvg from "../../images/gamesLogo/lol.svg";
+import csgoSvg from "../../images/gamesLogo/csgo.svg";
+import valorantSvg from "../../images/gamesLogo/valorant.svg";
+import genshinSvg from "../../images/gamesLogo/genshin-impact.svg";
+import mlSvg from "../../images/gamesLogo/mobile-legends.svg";
+import pubgmSvg from "../../images/gamesLogo/pubgm.svg";
 function PostForm(props) {
 	const handlePrevious = (e) => {
 		e.preventDefault();
@@ -32,19 +38,22 @@ function PostForm(props) {
 	const GameSelectItem = ({ image, label, ...others }) => (
 		<div {...others}>
 			<Group noWrap>
-				<Avatar src={image} />
-
+				<Avatar src={image} size="sm" styles={{ image: { objectFit: "contain" } }} />
 				<div>
 					<Text size="sm">{label}</Text>
 				</div>
 			</Group>
 		</div>
 	);
+
 	const gameData = [
-		{ value: 1, label: "Valorant" },
-		{ value: 2, label: "CS:GO" },
-		{ value: 3, label: "Dota 2" },
-		{ value: 4, label: "Genshin Impact" },
+		{ value: 0, label: "Dota 2", image: dota2Svg },
+		{ value: 1, label: "League of legends", image: lolSvg },
+		{ value: 2, label: "CS:GO", image: csgoSvg },
+		{ value: 3, label: "Valorant", image: valorantSvg },
+		{ value: 4, label: "Genshin Impact", image: genshinSvg },
+		{ value: 5, label: "Mobile Legends: Bang Bang", image: mlSvg },
+		{ value: 6, label: "PUBG Mobile", image: pubgmSvg },
 	];
 	return (
 		<Container style={{ display: "flex", flexDirection: "row" }}>
