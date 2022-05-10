@@ -4,25 +4,40 @@ import {
   Header,
   createStyles,
   ActionIcon,
-  Select,
+  Menu,
   Group,
   Box,
 } from "@mantine/core";
-import { BsHouse } from "react-icons/bs";
 import { SiEpicgames } from "react-icons/si";
 import { BiChevronDown } from "react-icons/bi";
+import "./header.css";
+import {
+  BsHouse,
+  BsBell,
+  BsPen,
+  BsPeople,
+  BsPersonCircle,
+} from "react-icons/bs";
+import { FiPlus } from "react-icons/fi";
+import { CgLogIn } from "react-icons/cg";
 import GamesNavigator from "../GamesNavigator";
+import { useContext } from "react";
+// import { ModalsContext } from "../../ModalsContext";
 const useStyles = createStyles((theme) => ({
   header: {
     height: "100%",
-    maxWidth: 1200,
+    maxWidth: "100%",
+    backgroundColor: "#e0e0e0",
   },
 
   links: {
     display: "flex",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
+    // justifyContent: "stretch",
     alignItems: "center",
-    height: "100%",
+    maxWidth: 1200,
+    margin: "auto",
+    paddingTop: 28,
     [theme.fn.smallerThan("xs")]: {
       display: "none",
     },
@@ -32,14 +47,33 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function DefaultHeader() {
+function DefaultHeader({ navLogoHandler, handleToHome, onLogin, onRegister }) {
   const { classes } = useStyles();
+  // const { loginModal, registerModal } = useContext(ModalsContext);
+  // const [loginModalOpen, setLoginModalOpen] = loginModal;
+  // const [registerModalOpen, setRegisterModalOpen] = registerModal;
+  const handleGameLogoClick = (gameId) => {
+    navLogoHandler(gameId);
+  };
+  const handleHome = (e) => {
+    handleToHome(e);
+  };
+  const handleLoginClick = () => {
+    // setLoginModalOpen(true);
+  };
+  const handleRegisterClick = () => {
+    // setRegisterModalOpen(true);
+  };
   return (
-    <Header height={98} pt="xs">
+    <Header height={98}>
       <Container className={classes.header}>
-        <Group spacing={5} className={classes.links}>
+        <Group className={classes.links}>
           <Group spacing={46} ml={55}>
-            <ActionIcon variant="transparent" color="black">
+            <ActionIcon
+              variant="transparent"
+              color="black"
+              onClick={handleHome}
+            >
               <BsHouse size={35} />
             </ActionIcon>
             <Menu
@@ -72,13 +106,21 @@ function DefaultHeader() {
               </Menu.Item>
             </Menu>
           </Group>
-          <GamesNavigator />
+          <GamesNavigator click={handleGameLogoClick} />
           {/* <ActionIcon variant="transparent">
 							<BsBell />
 						</ActionIcon> */}
-          <Group>
-            <Button variant="filled">Sign Up</Button>
-            <Button variant="outline">Login</Button>
+          <Group spacing="sm">
+            <Button
+              className="signInBtn"
+              variant="white"
+              onClick={handleLoginClick}
+            >
+              Log In
+            </Button>
+            <Button variant="filled" onClick={handleRegisterClick}>
+              Sign Up
+            </Button>
           </Group>
         </Group>
       </Container>

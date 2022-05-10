@@ -1,3 +1,44 @@
 .shell {
 	height: calc(100vh+100px);
 }
+.modal-container{
+	padding:0 1.6rem;
+	padding-top:2rem;
+	padding-bottom: 0.8rem;
+}
+.loginModalContainer{
+	width: 100%;
+	padding: 1rem;
+}
+.loginModalContainer > div{
+	width:inherit;
+}
+.lgn-modal-header{
+	position:absolute !important;
+	top:0.8rem;
+	right: 1.4rem;
+}
+.modal-login-btn{
+	width:inherit;
+	font-size: 1rem;
+	margin-top: 15px;
+	
+}
+
+.modal-contw-google-btn{
+	width:inherit;
+	background-color: #fbfbfb;
+	border: 1px #e5e5e5 solid;
+	color: #000;
+	box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+}
+.modal-contw-google-btn:hover{
+	color: #fbfbfb;
+	
+}
+.modal-txt-or{
+	text-align: center;
+}
+.no-account-helper p{
+	font-size: 12px;
+}
