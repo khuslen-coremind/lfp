@@ -16,7 +16,7 @@ import RoomFormModal from "./containers/RoomFormModal/RoomFormModal";
 import Room from "./containers/room/Room";
 import ContainedHoc from "./containers/contained/ContainedHoc";
 import { useState } from "react";
-// import { ModalsContext } from "./ModalsContext";
+import { ModalsContext } from "./ModalsContext";
 const useStyles = createStyles((theme) => ({
   container: {
     display: "flex",
@@ -118,100 +118,100 @@ function App() {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
   return (
-    <Routes>
-      {/* <ModalsContext.Provider
-        value={{
-          loginModal: [loginModalOpen, setLoginModalOpen],
-          registerModal: [registerModalOpen, setRegisterModalOpen],
-        }}
-      > */}
-      <Route
-        path="/"
-        element={
-          <DefaultHoc>
-            <Box mt={45}>
-              <Text mb={16}>Recent Activities</Text>
-              <RoomCard roomDetail={tahh[0]} />
-              <RoomCard roomDetail={tahh[1]} />
-              <RoomCard roomDetail={tahh[2]} />
-              <RoomCard roomDetail={tahh[3]} />
-              <RoomCard roomDetail={tahh[2]} />
-              <RoomCard roomDetail={tahh[3]} />
-            </Box>
+    <ModalsContext.Provider
+      value={{
+        loginModal: [loginModalOpen, setLoginModalOpen],
+        registerModal: [registerModalOpen, setRegisterModalOpen],
+      }}
+    >
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <DefaultHoc>
+              <Box mt={45}>
+                <Text mb={16}>Recent Activities</Text>
+                <RoomCard roomDetail={tahh[0]} />
+                <RoomCard roomDetail={tahh[1]} />
+                <RoomCard roomDetail={tahh[2]} />
+                <RoomCard roomDetail={tahh[3]} />
+                <RoomCard roomDetail={tahh[2]} />
+                <RoomCard roomDetail={tahh[3]} />
+              </Box>
 
-            <Box mt={45}>
-              <Text mb={16}>Games that you follow</Text>
-              <List />
-            </Box>
-          </DefaultHoc>
-        }
-      ></Route>
-      <Route
-        path="valorant"
-        element={
-          <DefaultHoc>
-            <Box mt={45} style={{ flexGrow: 0.7 }}>
-              <Text mb={16}>Community posts</Text>
-              <CreatePost />
-              {posts.map((e, i) => {
-                return <Post postData={e} key={e.createdOn} />;
-              })}
-            </Box>
-            {/* <div>
+              <Box mt={45}>
+                <Text mb={16}>Games that you follow</Text>
+                <List />
+              </Box>
+            </DefaultHoc>
+          }
+        ></Route>
+        <Route
+          path="valorant"
+          element={
+            <DefaultHoc>
+              <Box mt={45} style={{ flexGrow: 0.7 }}>
+                <Text mb={16}>Community posts</Text>
+                <CreatePost />
+                {posts.map((e, i) => {
+                  return <Post postData={e} key={e.createdOn} />;
+                })}
+              </Box>
+              {/* <div>
 							<Divider mt={85} orientation="vertical" />
 						</div> */}
-            <Box mt={45}>
-              <Text mb={16}>LFP activities</Text>
-              <CreateRoom />
-              {tahh.map((e, i) => {
-                return <RoomCard roomDetail={e} key={e.createdOn} />;
-              })}
-            </Box>
-          </DefaultHoc>
-        }
-      />
-      <Route
-        path="valorant/create/post"
-        element={
-          <DefaultHoc>
-            <Box mt={45}>
-              <PostForm />
-            </Box>
-          </DefaultHoc>
-        }
-      />
-      <Route
-        path="create/post"
-        element={
-          <DefaultHoc>
-            <Box mt={45}>
-              <PostForm />
-            </Box>
-          </DefaultHoc>
-        }
-      />
-      <Route
-        path="create/room"
-        element={
-          <DefaultHoc>
-            <Box mt={45}>
-              <RoomFormModal />
-            </Box>
-          </DefaultHoc>
-        }
-      />
+              <Box mt={45}>
+                <Text mb={16}>LFP activities</Text>
+                <CreateRoom />
+                {tahh.map((e, i) => {
+                  return <RoomCard roomDetail={e} key={e.createdOn} />;
+                })}
+              </Box>
+            </DefaultHoc>
+          }
+        />
+        <Route
+          path="valorant/create/post"
+          element={
+            <DefaultHoc>
+              <Box mt={45}>
+                <PostForm />
+              </Box>
+            </DefaultHoc>
+          }
+        />
+        <Route
+          path="create/post"
+          element={
+            <DefaultHoc>
+              <Box mt={45}>
+                <PostForm />
+              </Box>
+            </DefaultHoc>
+          }
+        />
+        <Route
+          path="create/room"
+          element={
+            <DefaultHoc>
+              <Box mt={45}>
+                <RoomFormModal />
+              </Box>
+            </DefaultHoc>
+          }
+        />
 
-      <Route
-        path="room/12"
-        element={
-          <ContainedHoc>
-            <Box mt={20}>
-              <Room />
-            </Box>
-          </ContainedHoc>
-        }
-      />
-      {/* <Route
+        <Route
+          path="room/12"
+          element={
+            <ContainedHoc>
+              <Box mt={20}>
+                <Room />
+              </Box>
+            </ContainedHoc>
+          }
+        />
+        {/* <Route
 				path="valorant/create/room"
 				element={
 					<DefaultHoc>
@@ -221,8 +221,8 @@ function App() {
 					</DefaultHoc>
 				}
 			/> */}
-      {/* </ModalsContext.Provider> */}
-    </Routes>
+      </Routes>
+    </ModalsContext.Provider>
   );
 }
 

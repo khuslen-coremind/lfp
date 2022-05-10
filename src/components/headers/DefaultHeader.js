@@ -22,7 +22,7 @@ import { FiPlus } from "react-icons/fi";
 import { CgLogIn } from "react-icons/cg";
 import GamesNavigator from "../GamesNavigator";
 import { useContext } from "react";
-// import { ModalsContext } from "../../ModalsContext";
+import { ModalsContext } from "../../ModalsContext";
 const useStyles = createStyles((theme) => ({
   header: {
     height: "100%",
@@ -49,9 +49,9 @@ const useStyles = createStyles((theme) => ({
 
 function DefaultHeader({ navLogoHandler, handleToHome, onLogin, onRegister }) {
   const { classes } = useStyles();
-  // const { loginModal, registerModal } = useContext(ModalsContext);
-  // const [loginModalOpen, setLoginModalOpen] = loginModal;
-  // const [registerModalOpen, setRegisterModalOpen] = registerModal;
+  const { loginModal, registerModal } = useContext(ModalsContext);
+  const [loginModalOpen, setLoginModalOpen] = loginModal;
+  const [registerModalOpen, setRegisterModalOpen] = registerModal;
   const handleGameLogoClick = (gameId) => {
     navLogoHandler(gameId);
   };
@@ -59,10 +59,10 @@ function DefaultHeader({ navLogoHandler, handleToHome, onLogin, onRegister }) {
     handleToHome(e);
   };
   const handleLoginClick = () => {
-    // setLoginModalOpen(true);
+    setLoginModalOpen(true);
   };
   const handleRegisterClick = () => {
-    // setRegisterModalOpen(true);
+    setRegisterModalOpen(true);
   };
   return (
     <Header height={98}>

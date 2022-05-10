@@ -10,11 +10,17 @@ import {
 } from "@mantine/core";
 import { FcGoogle } from "react-icons/fc";
 import "../Modal/Sign.css";
+import { ModalsContext } from "../../ModalsContext";
 function RegisterModal() {
+  const { loginModal, registerModal } = useContext(ModalsContext);
+  const [registerModalOpen, setRegisterModalOpen] = registerModal;
+  const handleRegisterClose = () => {
+    setRegisterModalOpen(false);
+  };
   return (
     <Modal
       centered
-      opened={registerOpen}
+      opened={registerModalOpen}
       onClose={handleRegisterClose}
       size="calc(33vw - 100px)"
       classNames={{ modal: "modal-container", header: "lgn-modal-header" }}

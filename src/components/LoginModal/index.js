@@ -10,19 +10,19 @@ import {
 } from "@mantine/core";
 import { FcGoogle } from "react-icons/fc";
 import "../Modal/Sign.css";
-// import { ModalsContext } from "../../ModalsContext";
+import { ModalsContext } from "../../ModalsContext";
 
 function Login() {
-  //   const { loginModal, registerModal } = useContext(ModalsContext);
-  //   const [loginModalOpen, setLoginModalOpen] = loginModal;
-  //   const handleLoginClose = () => {
-  //     setLoginModalOpen(false);
-  //   };
+  const { loginModal, registerModal } = useContext(ModalsContext);
+  const [loginModalOpen, setLoginModalOpen] = loginModal;
+  const handleLoginClose = () => {
+    setLoginModalOpen(false);
+  };
   return (
     <Modal
       centered
-      opened={true}
-      //   opened={loginModalOpen}
+      //   opened={true}
+      opened={loginModalOpen}
       onClose={handleLoginClose}
       size="calc(33vw - 100px)"
       classNames={{ modal: "modal-container", header: "lgn-modal-header" }}
@@ -70,7 +70,7 @@ function Login() {
         <Text classNames={{ root: "modal-txt-or" }}> OR</Text>
         <Button
           classNames={{ root: "modal-contw-google-btn" }}
-          leftIcon={<FcGoogle />}
+          leftIcon={<FcGoogle size={25} />}
           size="lg"
         >
           Continue with Google
