@@ -6,33 +6,39 @@ import "./fonts/Manrope/Manrope-Light.ttf";
 import App from "./App";
 // import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
+import { NotificationsProvider } from "@mantine/notifications";
+import { MantineProvider } from "@mantine/core";
 
 ReactDOM.render(
-	<BrowserRouter>
-		<App
-			styles={
-				[
-					// {
-					// 	"@font-face": {
-					// 		fontFamily: "Manrope",
-					// 		src: `url("./fonts/Manrope/Manrope-Bold.ttf") format("ttf")`,
-					// 		fontWeight: 700,
-					// 		fontStyle: "normal",
-					// 	},
-					// },
-					// {
-					// 	"@font-face": {
-					// 		fontFamily: "Manrope",
-					// 		src: `url("./fonts/Manrope/Manrope-Light.ttf") format("ttf")`,
-					// 		fontWeight: 300,
-					// 		fontStyle: "normal",
-					// 	},
-					// },
-				]
-			}
-		/>
-	</BrowserRouter>,
-	document.getElementById("root")
+  <MantineProvider>
+    <NotificationsProvider>
+      <BrowserRouter>
+        <App
+          styles={
+            [
+              // {
+              // 	"@font-face": {
+              // 		fontFamily: "Manrope",
+              // 		src: `url("./fonts/Manrope/Manrope-Bold.ttf") format("ttf")`,
+              // 		fontWeight: 700,
+              // 		fontStyle: "normal",
+              // 	},
+              // },
+              // {
+              // 	"@font-face": {
+              // 		fontFamily: "Manrope",
+              // 		src: `url("./fonts/Manrope/Manrope-Light.ttf") format("ttf")`,
+              // 		fontWeight: 300,
+              // 		fontStyle: "normal",
+              // 	},
+              // },
+            ]
+          }
+        />
+      </BrowserRouter>
+    </NotificationsProvider>
+  </MantineProvider>,
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

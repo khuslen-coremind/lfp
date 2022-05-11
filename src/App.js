@@ -147,7 +147,7 @@ function App() {
           }
         ></Route>
         <Route
-          path="valorant"
+          path=":gameId"
           element={
             <DefaultHoc>
               <Box mt={45} style={{ flexGrow: 0.7 }}>
@@ -169,17 +169,7 @@ function App() {
               </Box>
             </DefaultHoc>
           }
-        />
-        <Route
-          path="valorant/create/post"
-          element={
-            <DefaultHoc>
-              <Box mt={45}>
-                <PostForm />
-              </Box>
-            </DefaultHoc>
-          }
-        />
+        ></Route>
         <Route
           path="create/post"
           element={

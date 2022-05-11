@@ -12,7 +12,7 @@ import { FcGoogle } from "react-icons/fc";
 import "../Modal/Sign.css";
 import { ModalsContext } from "../../ModalsContext";
 
-function Login() {
+function LoginModal() {
   const { loginModal, registerModal } = useContext(ModalsContext);
   const [loginModalOpen, setLoginModalOpen] = loginModal;
   const handleLoginClose = () => {
@@ -20,8 +20,8 @@ function Login() {
   };
   return (
     <Modal
+      key="login-modal"
       centered
-      //   opened={true}
       opened={loginModalOpen}
       onClose={handleLoginClose}
       size="calc(33vw - 100px)"
@@ -92,4 +92,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginModal;

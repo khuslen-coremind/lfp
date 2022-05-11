@@ -1,25 +1,12 @@
 // import logo from "./logo.svg";
-import {
-  AppShell,
-  Container,
-  createStyles,
-  Text,
-  PasswordInput,
-  Anchor,
-  Modal,
-  Group,
-  PasswordInputProps,
-  Paper,
-  TextInput,
-  Button,
-} from "@mantine/core";
+import { AppShell, Container, createStyles } from "@mantine/core";
 
 import DefaultHeader from "../../components/headers/DefaultHeader";
 import UserHeader from "../../components/headers/UserHeader";
 import { useNavigate } from "react-router-dom";
 import "./a.css";
-import { useState } from "react";
-import Login from "../../components/LoginModal";
+import LoginModal from "../../components/LoginModal";
+import RegisterModal from "../../components/RegisterModal";
 const useStyles = createStyles((theme) => ({
   container: {
     display: "flex",
@@ -76,7 +63,8 @@ function DefaultHoc(props) {
       >
         {props.children}
       </Container>
-      <Login />
+      <LoginModal />
+      <RegisterModal />
     </AppShell>
   );
 }

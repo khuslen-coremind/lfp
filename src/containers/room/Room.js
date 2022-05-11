@@ -21,6 +21,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import UserBadge from "../../components/userBadge/UserBadge";
 import Tools from "../../components/tools/Tools";
 import { io } from "socket.io-client";
+import axios from "axios";
+import { url } from "../../constants/request";
 const socket = io("http://localhost:8000");
 
 function Room(props) {
@@ -59,9 +61,14 @@ function Room(props) {
           (date.getSeconds() < 10 ? "0" : "") +
           date.getSeconds(),
       };
-      socket.emit("send_message", messageData);
-      setRoomMessages((messages) => [...messages, messageData]);
       setCurrentMsgText("");
+      axios
+        .post(`${url}/api/postMessage`)
+        .then((res) => {
+          socket.emit("send_message", messageData);
+          setRoomMessages((messages) => [...messages, messageData]);
+        })
+        .catch((error) => console.log(error));
     }
   };
   let navigate = useNavigate();
@@ -316,6 +323,7 @@ const RoomMessage = ({ key, authorId, message }) => {
         sx={(theme) => ({
           backgroundColor: theme.colors.gray[3],
           padding: "7px 15px",
+          paddingRight: "13px",
           borderRadius: 16,
           width: "fit-content",
           fontSize: "0.9rem",
@@ -346,6 +354,7 @@ const RoomMessage = ({ key, authorId, message }) => {
         sx={(theme) => ({
           backgroundColor: theme.colors.yellow[5],
           padding: "7px 15px",
+          paddingLeft: "13px",
           borderRadius: 16,
           width: "fit-content",
           fontSize: "0.9rem",
