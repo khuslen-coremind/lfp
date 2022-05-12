@@ -62,6 +62,7 @@ function DefaultHeader({ navLogoHandler, handleToHome, onLogin, onRegister }) {
     setLoginModalOpen(true);
   };
   const handleRegisterClick = () => {
+    console.log(registerModal);
     setRegisterModalOpen(true);
   };
   return (

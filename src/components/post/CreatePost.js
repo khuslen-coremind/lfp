@@ -39,7 +39,7 @@ function CreatePost(props) {
               <BsPen />
             </IconContext.Provider>
           }
-          onClick={(e) => navigate("create/post")}
+          onClick={(e) => navigate("/create/post")}
         >
           WRITE
         </Button>
