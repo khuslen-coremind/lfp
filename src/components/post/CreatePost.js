@@ -22,6 +22,7 @@ function CreatePost(props) {
           src="https://i.pinimg.com/736x/ab/75/46/ab754671e4b62d109fcf4d76aec8b4df--anime-manga-saitama.jpg"
         />
         <TextInput
+          onClick={() => navigate("/create/post")}
           placeholder="Create post"
           variant="filled"
           aria-label="Create post input"

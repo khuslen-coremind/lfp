@@ -26,14 +26,21 @@ import valorantSvg from "../../images/gamesLogo/valorant.svg";
 import genshinSvg from "../../images/gamesLogo/genshin-impact.svg";
 import mlSvg from "../../images/gamesLogo/mobile-legends.svg";
 import pubgmSvg from "../../images/gamesLogo/pubgm.svg";
+import axios from "axios";
+import { API_URL } from "../../constants/request";
+import { AiOutlineCheck } from "react-icons/ai";
+import { showNotification } from "@mantine/notifications";
+import { useCookies } from "react-cookie";
+
 function PostForm(props) {
+  let navigate = useNavigate();
+  const [cookie] = useCookies("accessToken");
   const handlePrevious = (e) => {
     e.preventDefault();
     navigate("../");
   };
-  let navigate = useNavigate();
   const initialValue = "<p>any <a >link</a>, plain text</p>";
-  const [value, onChange] = useState(initialValue);
+
   const GameSelectItem = ({ image, label, ...others }) => (
     <div {...others}>
       <Group noWrap>
@@ -50,14 +57,68 @@ function PostForm(props) {
   );
 
   const gameData = [
-    { value: 0, label: "Dota 2", image: dota2Svg },
-    { value: 1, label: "League of legends", image: lolSvg },
-    { value: 2, label: "CS:GO", image: csgoSvg },
-    { value: 3, label: "Valorant", image: valorantSvg },
-    { value: 4, label: "Genshin Impact", image: genshinSvg },
-    { value: 5, label: "Mobile Legends: Bang Bang", image: mlSvg },
-    { value: 6, label: "PUBG Mobile", image: pubgmSvg },
+    { value: "1", label: "Dota 2", image: dota2Svg },
+    { value: "2", label: "League of Legends", image: lolSvg },
+    { value: "3", label: "Counter-Strike: Global Offensive", image: csgoSvg },
+    { value: "4", label: "Valorant", image: valorantSvg },
+    { value: "5", label: "Genshin Impact", image: genshinSvg },
+    { value: "6", label: "Mobile Legends: Bang Bang", image: mlSvg },
+    { value: "7", label: "PUBG Mobile", image: pubgmSvg },
   ];
+
+  const [gameId, setGameId] = useState("");
+  const [title, setTitle] = useState("");
+  const [activeTab, setActiveTab] = useState(0);
+  const [richEditor, onRichEditorChange] = useState("");
+  const [fileContent, setFileContent] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const handleSubmit = () => {
+    let requestData;
+    activeTab === 0
+      ? (requestData = { gameId, title, isTextContent: true, richEditor })
+      : (requestData = { gameId, title, isTextContent: false, fileContent });
+    const config = {
+      headers: { Authorization: `Bearer ${cookie.accessToken}` },
+    };
+    setLoading(true);
+    axios
+      .post(`${API_URL}/api/post/create`, requestData, config)
+      .then((res) => {
+        if (res.status === 200) {
+          setLoading(false);
+          navigate("/");
+          showNotification({
+            id: "post-success",
+            disallowClose: true,
+            autoClose: 5000,
+            title: `Posted successfully.`,
+            color: "green",
+            icon: <AiOutlineCheck size={18} />,
+            loading: false,
+          });
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        showNotification({
+          id: "post-failure",
+          disallowClose: true,
+          autoClose: 5000,
+          title: "Error occurred.",
+          message: "Error message:" + err,
+          color: "red",
+          loading: false,
+        });
+      });
+  };
+  const handleDrop = (files) => {
+    setFileContent(files[0]);
+    console.log(fileContent);
+    console.log("accepted files", files);
+  };
+  const handleReject = (files) => {
+    console.log("rejected files", files);
+  };
   return (
     <Container style={{ display: "flex", flexDirection: "row" }}>
       <Group direction="column" style={{ width: 600 }} position="apart" mr="xl">
@@ -76,13 +137,11 @@ function PostForm(props) {
               },
               label: { paddingBottom: 10 },
             }}
+            value={gameId}
+            onChange={setGameId}
             maxDropdownHeight={400}
           />
         </Group>
-        {/* <label htmlFor="title">
-				{" "}
-				<Text weight="bold">Title</Text>
-			</label> */}
         <TextInput
           // id="title"
           mt={35}
@@ -90,8 +149,15 @@ function PostForm(props) {
           label="Title"
           sx={{ width: "100%" }}
           placeholder=""
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
-        <Tabs mt={10} sx={{ width: "100%" }}>
+        <Tabs
+          active={activeTab}
+          onTabChange={setActiveTab}
+          mt={10}
+          sx={{ width: "100%" }}
+        >
           <Tabs.Tab
             style={{ fontSize: 16, fontWeight: "bold" }}
             label="Text"
@@ -99,13 +165,13 @@ function PostForm(props) {
           >
             <Box sx={{ width: "100%", minHeight: 300 }}>
               <RichTextEditor
-                value={value}
-                onChange={onChange}
+                value={richEditor}
+                onChange={onRichEditorChange}
                 controls={[
                   ["bold", "italic", "underline", "strike", "clean "],
                   ["h1", "h2", "h3", "h4"],
-                  ["unorderedList", "orderedList "],
-                  ["link", "image ", "video", "embed", "blockquote"],
+                  ["unorderedList", "orderedList", "blockquote"],
+                  ["link", "image ", "video", "embed"],
                   ["alignLeft", "alignCenter", "alignRight"],
                 ]}
                 sx={{ minHeight: 250 }}
@@ -118,16 +184,25 @@ function PostForm(props) {
             icon={<BsImage size={16} />}
           >
             <Box sx={{ width: "100%", minHeight: 300 }}>
-              <Uploader />
+              <Uploader onDrop={handleDrop} onReject={handleReject} />
             </Box>
           </Tabs.Tab>
         </Tabs>
         <Group sx={{ justifySelf: "end", alignSelf: "end" }}>
-          <Button variant="outline" onClick={handlePrevious}>
+          <Button variant="outline" onClick={handlePrevious} disabled={loading}>
             CANCEL
           </Button>
-          <Button variant="outline">SAVE DRAFT</Button>
-          <Button variant="filled">POST</Button>
+          <Button variant="outline" disabled={loading}>
+            SAVE DRAFT
+          </Button>
+          <Button
+            variant="filled"
+            type="submit"
+            onClick={handleSubmit}
+            loading={loading}
+          >
+            POST
+          </Button>
         </Group>
       </Group>
       <Container>

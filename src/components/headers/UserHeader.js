@@ -20,7 +20,6 @@ import { FiPlus } from "react-icons/fi";
 import { CgLogIn } from "react-icons/cg";
 // import pfp from "./621.png";
 import GamesNavigator from "../GamesNavigator";
-import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -42,7 +41,7 @@ const useStyles = createStyles((theme) => ({
     },
   },
 }));
-function UserHeader({ navLogoHandler, handleToHome }) {
+function UserHeader({ navLogoHandler, handleToHome, onLogout }) {
   const { classes } = useStyles();
 
   const handleGameLogoClick = (gameId) => {
@@ -50,6 +49,9 @@ function UserHeader({ navLogoHandler, handleToHome }) {
   };
   const handleHome = (e) => {
     handleToHome(e);
+  };
+  const handleLogout = () => {
+    onLogout();
   };
 
   return (
@@ -122,7 +124,9 @@ function UserHeader({ navLogoHandler, handleToHome }) {
               }
             >
               <Menu.Item icon={<BsPersonCircle size={16} />}>Profile</Menu.Item>
-              <Menu.Item icon={<CgLogIn size={16} />}>Log Out</Menu.Item>
+              <Menu.Item icon={<CgLogIn size={16} />} onClick={handleLogout}>
+                Log Out
+              </Menu.Item>
             </Menu>
           </Group>
         </Group>

@@ -1,4 +1,9 @@
-import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import {
+  Dropzone,
+  DropzoneStatus,
+  IMAGE_MIME_TYPE,
+  MIME_TYPES,
+} from "@mantine/dropzone";
 import { Group, Text, useMantineTheme, MantineTheme } from "@mantine/core";
 
 export const dropzoneChildren = (status, theme) => (
@@ -20,14 +25,19 @@ export const dropzoneChildren = (status, theme) => (
     </div>
   </Group>
 );
-
-function Uploader(props) {
+function Uploader({ onDrop, onReject }) {
+  const handleDrop = (files) => {
+    onDrop(files);
+  };
+  const handleReject = (files) => {
+    onReject(files);
+  };
   return (
     <Dropzone
-      onDrop={(files) => console.log("accepted files", files)}
-      onReject={(files) => console.log("rejected files", files)}
-      maxSize={3 * 1024 ** 2}
-      accept={IMAGE_MIME_TYPE}
+      accept={(IMAGE_MIME_TYPE, MIME_TYPES.mp4)}
+      onDrop={handleDrop}
+      onReject={handleReject}
+      maxSize={5 * 1024 * 1024}
       sx={{ height: 250, display: "flex", justifyContent: "center" }}
     >
       {(status) => dropzoneChildren(status)}

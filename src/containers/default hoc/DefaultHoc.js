@@ -7,6 +7,11 @@ import { useNavigate } from "react-router-dom";
 import "./a.css";
 import LoginModal from "../../components/LoginModal";
 import RegisterModal from "../../components/RegisterModal";
+import { useCookies } from "react-cookie";
+import { useEffect, useContext } from "react";
+import AuthService from "../../services/auth.service";
+import { AuthContext } from "../../AuthContext";
+
 const useStyles = createStyles((theme) => ({
   container: {
     display: "flex",
@@ -15,6 +20,15 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 function DefaultHoc(props) {
+  const [cookie] = useCookies("accessToken");
+  const { isAuthenticated, setAuthenticated } = useContext(AuthContext);
+  useEffect(() => {
+    console.log(cookie.accessToken);
+    if (cookie.accessToken) {
+      setAuthenticated(true);
+    }
+  }, [isAuthenticated, setAuthenticated]);
+
   const { classes } = useStyles();
   let navigate = useNavigate();
 
@@ -33,14 +47,26 @@ function DefaultHoc(props) {
   const handleHome = (e) => {
     navigate("/");
   };
+  const onLogout = () => {
+    AuthService.logout();
+    setAuthenticated(false);
+  };
 
   return (
     <AppShell
       header={
-        <DefaultHeader
-          navLogoHandler={handleGameLogoClick}
-          handleToHome={handleHome}
-        />
+        isAuthenticated ? (
+          <UserHeader
+            navLogoHandler={handleGameLogoClick}
+            handleToHome={handleHome}
+            onLogout={onLogout}
+          />
+        ) : (
+          <DefaultHeader
+            navLogoHandler={handleGameLogoClick}
+            handleToHome={handleHome}
+          />
+        )
       }
       styles={(theme) => ({
         main: {

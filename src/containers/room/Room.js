@@ -22,7 +22,7 @@ import UserBadge from "../../components/userBadge/UserBadge";
 import Tools from "../../components/tools/Tools";
 import { io } from "socket.io-client";
 import axios from "axios";
-import { url } from "../../constants/request";
+import { API_URL } from "../../constants/request";
 const socket = io("http://localhost:8000");
 
 function Room(props) {
@@ -63,7 +63,7 @@ function Room(props) {
       };
       setCurrentMsgText("");
       axios
-        .post(`${url}/api/postMessage`)
+        .post(`${API_URL}/api/postMessage`)
         .then((res) => {
           socket.emit("send_message", messageData);
           setRoomMessages((messages) => [...messages, messageData]);
