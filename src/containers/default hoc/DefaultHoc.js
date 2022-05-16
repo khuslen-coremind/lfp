@@ -21,14 +21,16 @@ const useStyles = createStyles((theme) => ({
 }));
 function DefaultHoc(props) {
   const [cookie] = useCookies("accessToken");
-  const [userCookie] = useCookies("userId");
   const { isAuthenticated, setAuthenticated, setUserId } =
     useContext(AuthContext);
   useEffect(() => {
-    console.log(cookie.accessToken);
+    console.log(
+      "access token from cookie= " + cookie.accessToken,
+      "userid from cookie= " + cookie.userId
+    );
     if (cookie.accessToken) {
       setAuthenticated(true);
-      setUserId(userCookie.userId);
+      setUserId(cookie.userId);
     }
   }, [isAuthenticated, setAuthenticated, setUserId]);
 

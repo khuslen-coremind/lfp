@@ -18,7 +18,14 @@ import ContainedHoc from "./containers/contained/ContainedHoc";
 import { useMemo, useState } from "react";
 import { ModalsContext } from "./ModalsContext";
 import { AuthContext } from "./AuthContext";
-import AuthService from "./services/auth.service";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "react-query";
+
 const useStyles = createStyles((theme) => ({
   container: {
     display: "flex",
@@ -130,93 +137,94 @@ function App() {
     }),
     [isAuthenticated, setAuthenticated, userId, setUserId]
   );
-
+  const queryClient = new QueryClient();
   return (
-    <AuthContext.Provider value={authValue}>
-      <ModalsContext.Provider
-        value={{
-          loginModal: [loginModalOpen, setLoginModalOpen],
-          registerModal: [registerModalOpen, setRegisterModalOpen],
-        }}
-      >
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <DefaultHoc>
-                <Box mt={45}>
-                  <Text mb={16}>Recent Activities</Text>
-                  <RoomCard roomDetail={tahh[0]} />
-                  <RoomCard roomDetail={tahh[1]} />
-                  <RoomCard roomDetail={tahh[2]} />
-                  <RoomCard roomDetail={tahh[3]} />
-                  <RoomCard roomDetail={tahh[2]} />
-                  <RoomCard roomDetail={tahh[3]} />
-                </Box>
+    <QueryClientProvider client={queryClient}>
+      <AuthContext.Provider value={authValue}>
+        <ModalsContext.Provider
+          value={{
+            loginModal: [loginModalOpen, setLoginModalOpen],
+            registerModal: [registerModalOpen, setRegisterModalOpen],
+          }}
+        >
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <DefaultHoc>
+                  <Box mt={45}>
+                    <Text mb={16}>Recent Activities</Text>
+                    <RoomCard roomDetail={tahh[0]} />
+                    <RoomCard roomDetail={tahh[1]} />
+                    <RoomCard roomDetail={tahh[2]} />
+                    <RoomCard roomDetail={tahh[3]} />
+                    <RoomCard roomDetail={tahh[2]} />
+                    <RoomCard roomDetail={tahh[3]} />
+                  </Box>
 
-                <Box mt={45}>
-                  <Text mb={16}>Games that you follow</Text>
-                  <List />
-                </Box>
-              </DefaultHoc>
-            }
-          ></Route>
-          <Route
-            path=":gameId"
-            element={
-              <DefaultHoc>
-                <Box mt={45} style={{ flexGrow: 0.7 }}>
-                  <Text mb={16}>Community posts</Text>
-                  <CreatePost />
-                  {posts.map((e, i) => {
-                    return <Post postData={e} key={e.createdOn} />;
-                  })}
-                </Box>
-                {/* <div>
+                  <Box mt={45}>
+                    <Text mb={16}>Games that you follow</Text>
+                    <List />
+                  </Box>
+                </DefaultHoc>
+              }
+            ></Route>
+            <Route
+              path=":gameId"
+              element={
+                <DefaultHoc>
+                  <Box mt={45} style={{ flexGrow: 0.7 }}>
+                    <Text mb={16}>Community posts</Text>
+                    <CreatePost />
+                    {posts.map((e, i) => {
+                      return <Post postData={e} key={e.createdOn} />;
+                    })}
+                  </Box>
+                  {/* <div>
 							<Divider mt={85} orientation="vertical" />
 						</div> */}
-                <Box mt={45}>
-                  <Text mb={16}>LFP activities</Text>
-                  <CreateRoom />
-                  {tahh.map((e, i) => {
-                    return <RoomCard roomDetail={e} key={e.createdOn} />;
-                  })}
-                </Box>
-              </DefaultHoc>
-            }
-          ></Route>
-          <Route
-            path="create/post"
-            element={
-              <DefaultHoc>
-                <Box mt={45}>
-                  <PostForm />
-                </Box>
-              </DefaultHoc>
-            }
-          />
-          <Route
-            path="create/room"
-            element={
-              <DefaultHoc>
-                <Box mt={45}>
-                  <RoomFormModal />
-                </Box>
-              </DefaultHoc>
-            }
-          />
+                  <Box mt={45}>
+                    <Text mb={16}>LFP activities</Text>
+                    <CreateRoom />
+                    {tahh.map((e, i) => {
+                      return <RoomCard roomDetail={e} key={e.createdOn} />;
+                    })}
+                  </Box>
+                </DefaultHoc>
+              }
+            ></Route>
+            <Route
+              path="create/post"
+              element={
+                <DefaultHoc>
+                  <Box mt={45}>
+                    <PostForm />
+                  </Box>
+                </DefaultHoc>
+              }
+            />
+            <Route
+              path="create/room"
+              element={
+                <DefaultHoc>
+                  <Box mt={45}>
+                    <RoomFormModal />
+                  </Box>
+                </DefaultHoc>
+              }
+            />
 
-          <Route
-            path="room/12"
-            element={
-              <DefaultHoc>
-                <Box mt={20}>
-                  <Room />
-                </Box>
-              </DefaultHoc>
-            }
-          />
-          {/* <Route
+            <Route
+              path="room/12"
+              element={
+                <DefaultHoc>
+                  <Box mt={20}>
+                    <Room />
+                  </Box>
+                </DefaultHoc>
+              }
+            />
+            {/* <Route
 				path="valorant/create/room"
 				element={
 					<DefaultHoc>
@@ -226,9 +234,10 @@ function App() {
 					</DefaultHoc>
 				}
 			/> */}
-        </Routes>
-      </ModalsContext.Provider>
-    </AuthContext.Provider>
+          </Routes>
+        </ModalsContext.Provider>
+      </AuthContext.Provider>
+    </QueryClientProvider>
   );
 }
 

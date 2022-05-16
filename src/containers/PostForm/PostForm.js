@@ -14,9 +14,10 @@ import {
   Divider,
   Avatar,
 } from "@mantine/core";
-import { useContext, useState } from "react";
+import "./postForm.css";
+import { useContext, useState, useEffect } from "react";
 import { RichTextEditor } from "@mantine/rte";
-import { BsCardText, BsImage, BsChevronDown } from "react-icons/bs";
+import { BsCardText, BsImage, BsChevronDown, BsUpload } from "react-icons/bs";
 import Uploader from "../../components/uploader/Uploader";
 import { useNavigate } from "react-router-dom";
 import dota2Svg from "../../images/gamesLogo/dota2.svg";
@@ -33,6 +34,7 @@ import { showNotification } from "@mantine/notifications";
 import { useCookies } from "react-cookie";
 import { AuthContext } from "../../AuthContext";
 import { ModalsContext } from "../../ModalsContext";
+import { MyDrafts } from "../../components/MyDrafts/MyDrafts";
 
 function PostForm(props) {
   const { isAuthenticated, userId } = useContext(AuthContext);
@@ -75,9 +77,9 @@ function PostForm(props) {
   const [title, setTitle] = useState("");
   const [activeTab, setActiveTab] = useState(0);
   const [textContent, onTextContentChange] = useState("");
-  const [fileContent, setFileContent] = useState(null);
+  const [fileContent, setFileContent] = useState([]);
   const [loading, setLoading] = useState(false);
-  const handleSubmit = () => {
+  const handleSubmit = (isDraft) => {
     if (isAuthenticated) {
       setLoading(true);
       let formData = new FormData();
@@ -87,9 +89,12 @@ function PostForm(props) {
       if (activeTab === 0) {
         formData.append("isTextContent", true);
         formData.append("textContent", textContent);
+        if (isDraft) {
+          formData.append("isDraft", true);
+        }
       } else {
         formData.append("isTextContent", false);
-        formData.append("fileContent", fileContent);
+        formData.append("file_content", fileContent);
       }
       const config = {
         headers: {
@@ -108,7 +113,7 @@ function PostForm(props) {
               id: "post-success",
               disallowClose: true,
               autoClose: 5000,
-              title: `Posted successfully.`,
+              title: isDraft ? `Draft saved.` : `Posted successfully.`,
               color: "green",
               icon: <AiOutlineCheck size={18} />,
               loading: false,
@@ -131,13 +136,23 @@ function PostForm(props) {
       setLoginModalOpen(true);
     }
   };
+
   const handleDrop = (files) => {
     setFileContent(files[0]);
-    console.log(fileContent);
-    console.log("accepted files", files);
   };
-  const handleReject = (files) => {
-    console.log("rejected files", files);
+  const handleReject = () => {
+    showNotification({
+      id: "file-rejection",
+      disallowClose: true,
+      autoClose: 5000,
+      title:
+        "Sorry, only images (.png, .jpg, .jpeg, .gif) and videos (.mp4) accepted.",
+      color: "red",
+      loading: false,
+    });
+  };
+  const handleRemove = () => {
+    setFileContent([]);
   };
   return (
     <Container style={{ display: "flex", flexDirection: "row" }}>
@@ -194,7 +209,7 @@ function PostForm(props) {
                   ["link", "image ", "video", "embed"],
                   ["alignLeft", "alignCenter", "alignRight"],
                 ]}
-                sx={{ minHeight: 250 }}
+                className="quil-modified"
               />
             </Box>
           </Tabs.Tab>
@@ -204,7 +219,12 @@ function PostForm(props) {
             icon={<BsImage size={16} />}
           >
             <Box sx={{ width: "100%", minHeight: 300 }}>
-              <Uploader onDrop={handleDrop} onReject={handleReject} />
+              <Uploader
+                onDrop={handleDrop}
+                onReject={handleReject}
+                files={fileContent}
+                onRemove={handleRemove}
+              />
             </Box>
           </Tabs.Tab>
         </Tabs>
@@ -212,9 +232,16 @@ function PostForm(props) {
           <Button variant="outline" onClick={handlePrevious} disabled={loading}>
             CANCEL
           </Button>
-          <Button variant="outline" disabled={loading}>
-            SAVE DRAFT
-          </Button>
+          {activeTab === 0 && (
+            <Button
+              variant="outline"
+              disabled={loading}
+              onClick={() => handleSubmit("draft")}
+            >
+              SAVE DRAFT
+            </Button>
+          )}
+
           <Button
             variant="filled"
             type="submit"
@@ -233,19 +260,7 @@ function PostForm(props) {
     </Container>
   );
 }
-const MyDrafts = () => {
-  return (
-    <Paper style={{ width: 245 }} shadow="xs" px="sm" py={20}>
-      <Text weight={700} pl={6}>
-        My drafts
-      </Text>
-      <Divider size="xs" my={13} />
-      <Text size="xs" sx={{ textAlign: "center" }}>
-        Your drafts will be here
-      </Text>
-    </Paper>
-  );
-};
+
 const rules = [
   { title: "No illegal content", content: "No ilslds" },
   { title: "No harrasments", content: "No ilslds" },

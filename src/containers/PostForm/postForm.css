@@ -1,0 +1,12 @@
+.quil-modified{
+    
+}
+.quil-modified .quill{
+    min-height: 250px;
+}
+.quill >div{
+    min-height: inherit;
+}
+.ql-editor{
+    min-height: inherit;
+}
