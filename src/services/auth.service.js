@@ -18,7 +18,8 @@ const login = async (email, password) => {
     .then((response) => {
       if (response.status === 200) {
         document.cookie = `accessToken=${response.data.token}`;
-        return response.data.username;
+        document.cookie = `userId=${response.data.userId}`;
+        return response.data;
       }
       return response.data;
     });
@@ -27,6 +28,7 @@ const logout = () => {
   //   localStorage.removeItem("user");
   document.cookie =
     "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   //   return axios.post(API_URL + "signout").then((response) => {
   //     return response.data;
   //   });

@@ -14,7 +14,7 @@ import {
   Divider,
   Avatar,
 } from "@mantine/core";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { RichTextEditor } from "@mantine/rte";
 import { BsCardText, BsImage, BsChevronDown } from "react-icons/bs";
 import Uploader from "../../components/uploader/Uploader";
@@ -31,8 +31,13 @@ import { API_URL } from "../../constants/request";
 import { AiOutlineCheck } from "react-icons/ai";
 import { showNotification } from "@mantine/notifications";
 import { useCookies } from "react-cookie";
+import { AuthContext } from "../../AuthContext";
+import { ModalsContext } from "../../ModalsContext";
 
 function PostForm(props) {
+  const { isAuthenticated, userId } = useContext(AuthContext);
+  const { loginModal } = useContext(ModalsContext);
+  const [loginModalOpen, setLoginModalOpen] = loginModal;
   let navigate = useNavigate();
   const [cookie] = useCookies("accessToken");
   const handlePrevious = (e) => {
@@ -69,47 +74,62 @@ function PostForm(props) {
   const [gameId, setGameId] = useState("");
   const [title, setTitle] = useState("");
   const [activeTab, setActiveTab] = useState(0);
-  const [richEditor, onRichEditorChange] = useState("");
+  const [textContent, onTextContentChange] = useState("");
   const [fileContent, setFileContent] = useState(null);
   const [loading, setLoading] = useState(false);
   const handleSubmit = () => {
-    let requestData;
-    activeTab === 0
-      ? (requestData = { gameId, title, isTextContent: true, richEditor })
-      : (requestData = { gameId, title, isTextContent: false, fileContent });
-    const config = {
-      headers: { Authorization: `Bearer ${cookie.accessToken}` },
-    };
-    setLoading(true);
-    axios
-      .post(`${API_URL}/api/post/create`, requestData, config)
-      .then((res) => {
-        if (res.status === 200) {
+    if (isAuthenticated) {
+      setLoading(true);
+      let formData = new FormData();
+      formData.append("title", title);
+      formData.append("gameId", gameId);
+      formData.append("userId", userId);
+      if (activeTab === 0) {
+        formData.append("isTextContent", true);
+        formData.append("textContent", textContent);
+      } else {
+        formData.append("isTextContent", false);
+        formData.append("fileContent", fileContent);
+      }
+      const config = {
+        headers: {
+          Authorization: `Bearer ${cookie.accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      axios
+        .post(`${API_URL}/api/post/create`, formData, config)
+        .then((res) => {
+          if (res.status === 200) {
+            setLoading(false);
+            navigate("/");
+            showNotification({
+              id: "post-success",
+              disallowClose: true,
+              autoClose: 5000,
+              title: `Posted successfully.`,
+              color: "green",
+              icon: <AiOutlineCheck size={18} />,
+              loading: false,
+            });
+          }
+        })
+        .catch((err) => {
           setLoading(false);
-          navigate("/");
           showNotification({
-            id: "post-success",
+            id: "post-failure",
             disallowClose: true,
             autoClose: 5000,
-            title: `Posted successfully.`,
-            color: "green",
-            icon: <AiOutlineCheck size={18} />,
+            title: "Error occurred.",
+            message: "Error message:" + err,
+            color: "red",
             loading: false,
           });
-        }
-      })
-      .catch((err) => {
-        setLoading(false);
-        showNotification({
-          id: "post-failure",
-          disallowClose: true,
-          autoClose: 5000,
-          title: "Error occurred.",
-          message: "Error message:" + err,
-          color: "red",
-          loading: false,
         });
-      });
+    } else {
+      setLoginModalOpen(true);
+    }
   };
   const handleDrop = (files) => {
     setFileContent(files[0]);
@@ -165,8 +185,8 @@ function PostForm(props) {
           >
             <Box sx={{ width: "100%", minHeight: 300 }}>
               <RichTextEditor
-                value={richEditor}
-                onChange={onRichEditorChange}
+                value={textContent}
+                onChange={onTextContentChange}
                 controls={[
                   ["bold", "italic", "underline", "strike", "clean "],
                   ["h1", "h2", "h3", "h4"],

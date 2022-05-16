@@ -21,13 +21,16 @@ const useStyles = createStyles((theme) => ({
 }));
 function DefaultHoc(props) {
   const [cookie] = useCookies("accessToken");
-  const { isAuthenticated, setAuthenticated } = useContext(AuthContext);
+  const [userCookie] = useCookies("userId");
+  const { isAuthenticated, setAuthenticated, setUserId } =
+    useContext(AuthContext);
   useEffect(() => {
     console.log(cookie.accessToken);
     if (cookie.accessToken) {
       setAuthenticated(true);
+      setUserId(userCookie.userId);
     }
-  }, [isAuthenticated, setAuthenticated]);
+  }, [isAuthenticated, setAuthenticated, setUserId]);
 
   const { classes } = useStyles();
   let navigate = useNavigate();
@@ -50,6 +53,7 @@ function DefaultHoc(props) {
   const onLogout = () => {
     AuthService.logout();
     setAuthenticated(false);
+    setUserId(null);
   };
 
   return (

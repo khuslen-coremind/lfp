@@ -120,13 +120,17 @@ function App() {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
   const [isAuthenticated, setAuthenticated] = useState(false);
+  const [userId, setUserId] = useState(null);
   const authValue = useMemo(
     () => ({
       isAuthenticated,
       setAuthenticated,
+      userId,
+      setUserId,
     }),
-    [isAuthenticated, setAuthenticated]
+    [isAuthenticated, setAuthenticated, userId, setUserId]
   );
+
   return (
     <AuthContext.Provider value={authValue}>
       <ModalsContext.Provider
