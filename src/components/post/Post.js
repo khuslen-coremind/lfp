@@ -9,13 +9,15 @@ import {
 	Box,
 	Paper,
 	Divider,
+	Image,
 } from "@mantine/core";
 // import { GasStation, Gauge, ManualGearbox, Users } from "tabler-icons-react";
 import {
 	BsCaretUp,
 	BsCaretDown,
+	BsCaretUpFill,
+	BsCaretDownFill,
 	BsChevronCompactUp,
-	BsChatSquare,
 	BsEyeSlash,
 	BsFlag,
 	BsHeart,
@@ -24,6 +26,13 @@ import {
 import { VscReply } from "react-icons/vsc";
 import { AiOutlineShareAlt } from "react-icons/ai";
 import { useState } from "react";
+import moment from "moment";
+import ReactPlayer from "react-player";
+import parse from "html-react-parser";
+import axios from "axios";
+import { API_URL } from "../../constants/request";
+import { useCookies } from "react-cookie";
+
 const useStyles = createStyles((theme) => ({
 	button: {
 		border: "1px solid #e9ecef",
@@ -43,10 +52,14 @@ const useStyles = createStyles((theme) => ({
 }));
 const PostInput = { flexGrow: 1 };
 
-function Post({ key, ...props }) {
-	const { postData } = props;
+function Post({ key, postData }) {
+	const [cookie] = useCookies("accessToken");
 	const { classes } = useStyles();
 	const [opened, setOpen] = useState(false);
+	const [hasUpVotedBefore, setHasUpVotedBefore] = useState(postData.hasUpVoted);
+	const [hasDownVotedBefore, setHasDownVotedBefore] = useState(postData.hasDownVoted);
+	const [hasUpVoted, setHasUpVoted] = useState(false);
+	const [hasDownVoted, setHasDownVoted] = useState(false);
 	const collapse = (e) => {
 		setOpen(!opened);
 	};
@@ -58,6 +71,39 @@ function Post({ key, ...props }) {
 	const body =
 		"I use Heroku to host my Node.js application, but MongoDB add-on appears to be too expensive. I consider switching to Digital Ocean VPS to save some cash.";
 	const postedAt = "10 minutes ago";
+
+	const handleVote = (id, isUpVote) => (e) => {
+		const requestData = { vote: isUpVote ? 1 : -1, postId: id };
+		const config = {
+			headers: {
+				Authorization: `Bearer ${cookie.accessToken}`,
+			},
+		};
+		axios
+			.post(`${API_URL}/api/poll/post/${id}`, requestData, config)
+			.then((response) => {
+				if (isUpVote) {
+					if (hasUpVoted) {
+						setHasUpVoted(false);
+						setHasDownVoted(false);
+					} else {
+						setHasUpVoted(true);
+						setHasDownVoted(false);
+					}
+				} else {
+					if (hasDownVoted) {
+						setHasDownVoted(false);
+						setHasUpVoted(false);
+					} else {
+						setHasDownVoted(true);
+						setHasUpVoted(false);
+					}
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
 	return (
 		<Paper
 			key={key}
@@ -65,6 +111,7 @@ function Post({ key, ...props }) {
 			className={classes.button}
 			// pr={17} pl={16}
 		>
+			{/* {JSON.stringify(postData)} */}
 			<Group
 				direction="column"
 				align="center"
@@ -72,12 +119,31 @@ function Post({ key, ...props }) {
 				className={classes.vote}
 				px={10}
 				pt={8}>
-				<ActionIcon>
-					<BsCaretUp size={22} />
+				<ActionIcon onClick={handleVote(postData.postInfo.id, 1)}>
+					{hasUpVotedBefore || hasUpVoted ? (
+						<BsCaretUpFill size={22} color="#5D62EA" />
+					) : (
+						<BsCaretUp size={22} />
+					)}
 				</ActionIcon>
-				<Text weight="bold">{postData.voteCount}</Text>
-				<ActionIcon>
-					<BsCaretDown size={22} />
+
+				<Text weight="bold">
+					{hasUpVotedBefore || hasDownVotedBefore
+						? postData.totalVotes[0]["total"]
+						: hasUpVoted
+						? parseInt(postData.totalVotes[0]["total"]) + 1
+						: hasDownVoted
+						? parseInt(postData.totalVotes[0]["total"]) - 1
+						: postData.totalVotes[0]["total"]}
+					{/* { postData.totalVotes[0]['total']} */}
+				</Text>
+
+				<ActionIcon onClick={handleVote(postData.postInfo.id, 0)}>
+					{postData.hasDownVoted || hasDownVoted ? (
+						<BsCaretDownFill size={22} color="#FF7033" />
+					) : (
+						<BsCaretDown size={22} />
+					)}
 				</ActionIcon>
 			</Group>
 			<Group
@@ -89,28 +155,65 @@ function Post({ key, ...props }) {
 				// sx={{ maxHeight: 153 }}
 			>
 				<Group direction="column" sx={{ flexGrow: 1, width: "min-content" }}>
-					<Group direction="column" spacing={2}>
+					<Group direction="column" spacing={2} sx={{ width: "100%" }}>
 						<Text weight="lighter" size="sm">
-							Posted by {postData.userName} <b>{postData.postedOn}</b> ago
+							Posted by <b>{postData.postInfo.user.username} </b>
+							{moment(postData.postInfo.createdAt).fromNow()}
 						</Text>
-						<Group direction="column" spacing={0}>
-							<Text mt={16} size="xl">
-								{postData.title}
+						<Group direction="column" spacing={0} sx={{ width: "100%" }}>
+							<Text mt={16} size="xl" weight={600}>
+								{postData.postInfo.title}
 							</Text>
-							<Text mt={16} underline variant="link">
-								{postData.content}
-							</Text>
+							{postData.postInfo.isText ? (
+								<Text mt={15} color="gray" weight={500}>
+									{parse(postData.postInfo.textContent)}
+								</Text>
+							) : postData.postInfo.contentUrl.slice(-3) === "mp4" ? (
+								<div
+									style={{
+										display: "flex",
+										justifyContent: "center",
+										width: "95%",
+										paddingRight: 10,
+										paddingLeft: 10,
+										paddingTop: 15,
+										paddingBottom: 15,
+									}}>
+									{" "}
+									<ReactPlayer
+										style={{
+											backgroundColor: "black",
+											borderRadius: 4,
+											paddingBottom: 3,
+										}}
+										light
+										pip
+										height={250}
+										width="100%"
+										controls
+										url={postData.postInfo.contentUrl}
+									/>
+								</div>
+							) : (
+								<Image
+									mt={15}
+									radius="sm"
+									height={250}
+									src={postData.postInfo.contentUrl}
+									alt={postData.postInfo.contentUrl}
+								/>
+							)}
 						</Group>
 					</Group>
 					<Group spacing={0} position="apart" sx={{ width: "100%" }}>
 						<Group>
-							<Button
+							{/* <Button
 								px={11}
 								leftIcon={<BsChatSquare style={{ marginTop: 1 }} />}
 								variant="subtle"
 								onClick={collapse}>
 								{postData.comments.length} Comments
-							</Button>
+							</Button> */}
 							<Button px={11} leftIcon={<AiOutlineShareAlt />} variant="subtle">
 								Share{" "}
 							</Button>
@@ -141,7 +244,7 @@ function Post({ key, ...props }) {
 								{body}
 							</Text>
 							<Group className={classes.body} spacing={3} sx={{ marginLeft: "auto" }}>
-								<Text weight="lighter">{postData.voteCount}</Text>
+								<Text weight="lighter">{postData.totalVotes[0]["total"]}</Text>
 								<ActionIcon>
 									<BsHeart />
 								</ActionIcon>
