@@ -41,7 +41,7 @@ function PostForm(props) {
 	const { loginModal } = useContext(ModalsContext);
 	const [loginModalOpen, setLoginModalOpen] = loginModal;
 	let navigate = useNavigate();
-	const [cookie] = useCookies("accessToken");
+	const [cookies] = useCookies(["accessToken"]);
 	const handlePrevious = (e) => {
 		e.preventDefault();
 		navigate("../");
@@ -104,7 +104,7 @@ function PostForm(props) {
 			}
 			const config = {
 				headers: {
-					Authorization: `Bearer ${cookie.accessToken}`,
+					Authorization: `Bearer ${cookies.accessToken}`,
 					"Content-Type": "multipart/form-data",
 				},
 			};

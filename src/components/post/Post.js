@@ -53,7 +53,7 @@ const useStyles = createStyles((theme) => ({
 const PostInput = { flexGrow: 1 };
 
 function Post({ key, postData }) {
-	const [cookie] = useCookies("accessToken");
+	const [cookies] = useCookies(["accessToken"]);
 	const { classes } = useStyles();
 	const [opened, setOpen] = useState(false);
 	const [hasUpVotedBefore, setHasUpVotedBefore] = useState(postData.hasUpVoted);
@@ -73,10 +73,11 @@ function Post({ key, postData }) {
 	const postedAt = "10 minutes ago";
 
 	const handleVote = (id, isUpVote) => (e) => {
+		console.log(cookies);
 		const requestData = { vote: isUpVote ? 1 : -1, postId: id };
 		const config = {
 			headers: {
-				Authorization: `Bearer ${cookie.accessToken}`,
+				Authorization: `Bearer ${cookies.accessToken}`,
 			},
 		};
 		axios
@@ -196,9 +197,9 @@ function Post({ key, postData }) {
 								</div>
 							) : (
 								<Image
+									fit="contain"
 									mt={15}
 									radius="sm"
-									height={250}
 									src={postData.postInfo.contentUrl}
 									alt={postData.postInfo.contentUrl}
 								/>

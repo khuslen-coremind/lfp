@@ -140,8 +140,8 @@ function App() {
 	);
 	const queryClient = new QueryClient();
 	return (
-		<QueryClientProvider client={queryClient}>
-			<AuthContext.Provider value={authValue}>
+		<AuthContext.Provider value={authValue}>
+			<QueryClientProvider client={queryClient}>
 				<ModalsContext.Provider
 					value={{
 						loginModal: [loginModalOpen, setLoginModalOpen],
@@ -222,8 +222,8 @@ function App() {
 			/> */}
 					</Routes>
 				</ModalsContext.Provider>
-			</AuthContext.Provider>
-		</QueryClientProvider>
+			</QueryClientProvider>
+		</AuthContext.Provider>
 	);
 }
 

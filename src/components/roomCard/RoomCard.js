@@ -8,6 +8,7 @@ import {
 	Button,
 	Avatar,
 	Box,
+	Image,
 } from "@mantine/core";
 // import { GasStation, Gauge, ManualGearbox, Users } from "tabler-icons-react";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -19,6 +20,15 @@ import Tools from "../tools/Tools";
 import LfpTimer from "../lfpTimer/LfpTimer";
 import { useNavigate } from "react-router-dom";
 import UserBadge from "../userBadge/UserBadge";
+
+import dotaPng from "../../../src/images/gamesPictures/dota2.png";
+import lolPng from "../../../src/images/gamesPictures/lol.png";
+import csgoPng from "../../../src/images/gamesPictures/csgo.png";
+import valorantPng from "../../../src/images/gamesPictures/valorant.png";
+import genshintPng from "../../../src/images/gamesPictures/genshin.png";
+import mlPng from "../../../src/images/gamesPictures/ml.png";
+import pubgmPng from "../../../src/images/gamesPictures/pubgm.png";
+import { gameRanks } from "../../constants/gameRanks";
 const useStyles = createStyles((theme) => ({
 	card: {
 		backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
@@ -76,10 +86,20 @@ const useStyles = createStyles((theme) => ({
 
 function RoomCard({ key, roomDetail }) {
 	const { classes } = useStyles();
+	const gameIdPicPair = {
+		1: dotaPng,
+		2: lolPng,
+		3: csgoPng,
+		4: valorantPng,
+		5: genshintPng,
+		6: mlPng,
+		7: pubgmPng,
+	};
 	let navigate = useNavigate();
 	const handleJoin = () => {
 		navigate("/room/12");
 	};
+
 	return (
 		<Card
 			key={key}
@@ -106,10 +126,11 @@ function RoomCard({ key, roomDetail }) {
 							<Text size="xs" weight="lighter">
 								<i>LFP</i>
 							</Text>
-							<img
+							<Image
+								fit="contain"
 								height={15}
-								width={15}
-								src="https://images.cults3d.com/4QqRV9kLYYEuw9ur_X3yjQl1sjk=/516x516/https://files.cults3d.com/uploaders/15024335/illustration-file/a86d53e4-2bd9-4a8f-9550-986686c3131a/gi0mAjIh_400x400.png"
+								width={25}
+								src={gameIdPicPair[roomDetail.gameId]}
 								alt="game logo"
 							/>
 						</Group>
@@ -148,7 +169,21 @@ function RoomCard({ key, roomDetail }) {
 				{/* <Divider size="xs" /> */}
 			</Group>
 			<Group pt="sm" pl={2} position="apart">
-				<img height={36} width={36} src={roomDetail.rank} alt="user rank" />
+				{roomDetail.hasCustomData ? (
+					<div></div>
+				) : (
+					<img
+						height={36}
+						width={36}
+						src={
+							"../../" +
+							gameRanks[roomDetail.gameId].filter(
+								(e) => e.value == roomDetail.gameRankId
+							)[0]["image"]
+						}
+						alt="user rank"
+					/>
+				)}
 				<Group
 					direction="column"
 					position="center"

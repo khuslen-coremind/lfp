@@ -14,6 +14,8 @@ import { FiPlus } from "react-icons/fi";
 import { CgLogIn } from "react-icons/cg";
 // import pfp from "./621.png";
 import GamesNavigator from "../GamesNavigator";
+import AuthService from "../../services/auth.service";
+import { AuthContext } from "../../AuthContext";
 
 const useStyles = createStyles((theme) => ({
 	header: {
@@ -46,6 +48,24 @@ function UserHeader({ navLogoHandler, handleToHome, onLogout }) {
 	};
 	const handleLogout = () => {
 		onLogout();
+	};
+	const LogoutButton = () => {
+		return (
+			<AuthContext.Consumer>
+				{({ setAuthenticated, setUserId }) => (
+					<Menu.Item
+						icon={<CgLogIn size={16} />}
+						onClick={() => {
+							console.log("log out");
+							AuthService.logout();
+							setAuthenticated(false);
+							setUserId("");
+						}}>
+						Log Out
+					</Menu.Item>
+				)}
+			</AuthContext.Consumer>
+		);
 	};
 
 	return (
@@ -108,9 +128,7 @@ function UserHeader({ navLogoHandler, handleToHome, onLogout }) {
 								/>
 							}>
 							<Menu.Item icon={<BsPersonCircle size={16} />}>Profile</Menu.Item>
-							<Menu.Item icon={<CgLogIn size={16} />} onClick={handleLogout}>
-								Log Out
-							</Menu.Item>
+							<LogoutButton />
 						</Menu>
 					</Group>
 				</Group>

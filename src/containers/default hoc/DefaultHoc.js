@@ -20,18 +20,23 @@ const useStyles = createStyles((theme) => ({
 	},
 }));
 function DefaultHoc(props) {
-	const [cookie] = useCookies("accessToken");
-	const { isAuthenticated, setAuthenticated, setUserId } = useContext(AuthContext);
-	useEffect(() => {
-		console.log(
-			"access token from cookie= " + cookie.accessToken,
-			"userid from cookie= " + cookie.userId
-		);
-		if (cookie.accessToken) {
-			setAuthenticated(true);
-			setUserId(cookie.userId);
-		}
-	}, [isAuthenticated, setAuthenticated, setUserId]);
+	const [cookies] = useCookies(["accessToken"]);
+	const { isAuthenticated, setAuthenticated, userId, setUserId } =
+		useContext(AuthContext);
+	useEffect(
+		() => {
+			console.log(
+				"access token from cookie= " + cookies.accessToken,
+				"userid from cookie= " + cookies.userId
+			);
+			if (cookies.accessToken) {
+				setAuthenticated(true);
+				setUserId(cookies.userId);
+			}
+		},
+		[]
+		// [isAuthenticated, setAuthenticated, userId, setUserId]
+	);
 
 	const { classes } = useStyles();
 	let navigate = useNavigate();
@@ -51,21 +56,12 @@ function DefaultHoc(props) {
 	const handleHome = (e) => {
 		navigate("/");
 	};
-	const onLogout = () => {
-		AuthService.logout();
-		setAuthenticated(false);
-		setUserId("");
-	};
 
 	return (
 		<AppShell
 			header={
-				isAuthenticated ? (
-					<UserHeader
-						navLogoHandler={handleGameLogoClick}
-						handleToHome={handleHome}
-						onLogout={onLogout}
-					/>
+				isAuthenticated === true ? (
+					<UserHeader navLogoHandler={handleGameLogoClick} handleToHome={handleHome} />
 				) : (
 					<DefaultHeader navLogoHandler={handleGameLogoClick} handleToHome={handleHome} />
 				)

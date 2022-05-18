@@ -15,31 +15,32 @@ function SideScreenPost() {
 	const [items, setItems] = useState([]);
 	const [hasMore, sethasMore] = useState(true);
 	const { isAuthenticated, setAuthenticated } = useContext(AuthContext);
-	const [cookie] = useCookies("accessToken");
+	const [cookies] = useCookies(["accessToken"]);
 
+	const getPosts = async () => {
+		let res;
+		if (isAuthenticated === true) {
+			res = await fetch(
+				`http://localhost:8000/api/post/${gameId}/posts?page=1&limit=${limit}`,
+				{
+					headers: new Headers({
+						Authorization: `Bearer ${cookies.accessToken}`,
+					}),
+				}
+			);
+		} else {
+			res = await fetch(
+				`http://localhost:8000/api/post/${gameId}/posts?page=1&limit=${limit + 3}`
+			);
+		}
+		const data = await res.json();
+		return data.results;
+		console.log(data);
+	};
 	useEffect(() => {
-		const getPosts = async () => {
-			let res;
-			if (isAuthenticated === true) {
-				res = await fetch(
-					`http://localhost:8000/api/post/${gameId}/posts?page=1&limit=${limit}`,
-					{
-						headers: new Headers({
-							Authorization: `Bearer ${cookie.accessToken}`,
-						}),
-					}
-				);
-			} else {
-				res = await fetch(
-					`http://localhost:8000/api/post/${gameId}/posts?page=1&limit=${limit + 3}`
-				);
-			}
-
-			const data = await res.json();
-			console.log(data);
-			setItems(data.results);
-		};
-		getPosts();
+		getPosts()
+			.then((results) => setItems(results))
+			.catch((error) => console.log(error));
 	}, [gameId]);
 
 	const fetchPosts = async () => {
@@ -51,7 +52,7 @@ function SideScreenPost() {
 				}`,
 				{
 					headers: {
-						Authorization: `Bearer ${cookie.accessToken}`,
+						Authorization: `Bearer ${cookies.accessToken}`,
 					},
 				}
 			);
@@ -110,7 +111,7 @@ function SideScreenPost() {
 				// }
 			>
 				{items.map((e) => {
-					console.log(e.postInfo.id);
+					console.log(e);
 					return <Post postData={e} key={e.postInfo.id} />;
 				})}
 			</InfiniteScroll>

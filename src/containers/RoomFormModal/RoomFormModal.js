@@ -39,6 +39,8 @@ import axios from "axios";
 import { showNotification } from "@mantine/notifications";
 import { AiOutlineCheck } from "react-icons/ai";
 import { ModalsContext } from "../../ModalsContext";
+import { gameRanks } from "../../constants/gameRanks";
+
 const getMyDrafts = async () => {
 	// console.log("userId: " + userId);
 	const response = await fetch(`${API_URL}/api/gameranks`);
@@ -99,29 +101,29 @@ function RoomFormModal({ opened, ...props }) {
 			value: "7",
 		},
 	];
-	const RankData = [
-		{
-			image: "https://img.icons8.com/clouds/256/000000/futurama-bender.png",
-			label: "Valorant",
-			value: "Bender Bending Rodríguez",
-		},
+	// const RankData = [
+	// 	{
+	// 		image: "https://img.icons8.com/clouds/256/000000/futurama-bender.png",
+	// 		label: "Valorant",
+	// 		value: "Bender Bending Rodríguez",
+	// 	},
 
-		{
-			image: "https://img.icons8.com/clouds/256/000000/futurama-mom.png",
-			label: "Dota 2",
-			value: "Carol Miller",
-		},
-		{
-			image: "https://img.icons8.com/clouds/256/000000/homer-simpson.png",
-			label: "Mobile Legends: Bang Bang",
-			value: "Homer Simpson",
-		},
-		{
-			image: "https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png",
-			label: "PUBG Mobile",
-			value: "PUBG Mobile",
-		},
-	];
+	// 	{
+	// 		image: "https://img.icons8.com/clouds/256/000000/futurama-mom.png",
+	// 		label: "Dota 2",
+	// 		value: "Carol Miller",
+	// 	},
+	// 	{
+	// 		image: "https://img.icons8.com/clouds/256/000000/homer-simpson.png",
+	// 		label: "Mobile Legends: Bang Bang",
+	// 		value: "Homer Simpson",
+	// 	},
+	// 	{
+	// 		image: "https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png",
+	// 		label: "PUBG Mobile",
+	// 		value: "PUBG Mobile",
+	// 	},
+	// ];
 
 	const GameSelectItem = ({ image, label, ...others }) => (
 		<div {...others}>
@@ -137,7 +139,7 @@ function RoomFormModal({ opened, ...props }) {
 	const RankSelectItem = ({ image, label, ...others }) => (
 		<div {...others}>
 			<Group noWrap>
-				{/* <Avatar src={image} styles={{ image: { objectFit: "contain" } }} /> */}
+				<Avatar src={image} size={40} styles={{ image: { objectFit: "contain" } }} />
 				<div>
 					<Text size="sm">{label}</Text>
 				</div>
@@ -176,10 +178,11 @@ function RoomFormModal({ opened, ...props }) {
 	const { isAuthenticated, userId } = useContext(AuthContext);
 	const { loginModal } = useContext(ModalsContext);
 	const [loginModalOpen, setLoginModalOpen] = loginModal;
-	const [cookie] = useCookies("accessToken");
+	const [cookies] = useCookies(["accessToken"]);
 	const { classes } = useStyles();
 	const [loading, setLoading] = useState(false);
-	const [gameSelectValue, setGameSelect] = useState("");
+	const [gameSelectValue, setGameSelect] = useState("1");
+	const [rankSelectValue, setRankSelect] = useState("");
 	const [roomSize, setRoomSize] = useState(1);
 	const [isNow, setIsNow] = useState(false);
 	const [roomTime, setRoomTime] = useState("");
@@ -187,18 +190,23 @@ function RoomFormModal({ opened, ...props }) {
 	const [description, setDescription] = useState("");
 	const [preferences, setPreferences] = useState("");
 	const [utils, setUtils] = useState([]);
+	const [customRank, setCustomRank] = useState();
+
 	const date = new Date();
+
 	const handleSubmit = () => {
 		setLoading(true);
 		if (isAuthenticated) {
 			const config = {
 				headers: {
-					Authorization: `Bearer ${cookie.accessToken}`,
+					Authorization: `Bearer ${cookies.accessToken}`,
 				},
 			};
 			const requestData = {
 				userId,
 				gameId: gameSelectValue,
+				...(gameSelectValue === "5" && { hasCustomRank: true, customRank }),
+				...(gameSelectValue !== "5" && { gameRankId: rankSelectValue }),
 				roomSize,
 				targetTime: isNow ? date.toISOString() : roomTime,
 				title,
@@ -281,21 +289,43 @@ function RoomFormModal({ opened, ...props }) {
 								}}
 								maxDropdownHeight={400}
 							/>
-							{/* sadge <Select
-								id="rank_select"
-								required
-								label="My rank is "
-								itemComponent={RankSelectItem}
-								data={RankData}
-								rightSection={<BsChevronDown size={14} />}
-								rightSectionWidth={30}
-								styles={{
-									rightSection: {
-										pointerEvents: "none",
-									},
-									label: { paddingBottom: 10 },
-								}}
-							/> */}
+							{gameSelectValue === "5" ? (
+								<NumberInput
+									label="Enter your AR"
+									placeholder="Lowest value is AR 16"
+									max={100}
+									min={16}
+									value={customRank}
+									onChange={(val) => setCustomRank(val)}
+									stepHoldDelay={500}
+									stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+									styles={{
+										label: { paddingBottom: 10 },
+										placeholder: {
+											fontSize: 9,
+										},
+									}}
+								/>
+							) : (
+								<Select
+									id="rank_select"
+									required
+									label="My rank is "
+									itemComponent={RankSelectItem}
+									data={gameRanks[gameSelectValue]}
+									rightSection={<BsChevronDown size={14} />}
+									rightSectionWidth={30}
+									maxDropdownHeight={400}
+									value={rankSelectValue}
+									onChange={setRankSelect}
+									styles={{
+										rightSection: {
+											pointerEvents: "none",
+										},
+										label: { paddingBottom: 10 },
+									}}
+								/>
+							)}
 						</Group>
 					</Group>
 					<Group spacing="xs" mt={2} direction="column" sx={{ width: "100%" }}>
