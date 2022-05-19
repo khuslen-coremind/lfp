@@ -34,19 +34,18 @@ import { showNotification } from "@mantine/notifications";
 import { useCookies } from "react-cookie";
 import { AuthContext } from "../../AuthContext";
 import { ModalsContext } from "../../ModalsContext";
-import { MyDrafts } from "../../components/MyDrafts/MyDrafts";
+import { MyDrafts } from "../../components/MyDrafts";
 
 function PostForm(props) {
   const { isAuthenticated, userId } = useContext(AuthContext);
   const { loginModal } = useContext(ModalsContext);
   const [loginModalOpen, setLoginModalOpen] = loginModal;
   let navigate = useNavigate();
-  const [cookie] = useCookies("accessToken");
+  const [cookies] = useCookies(["accessToken"]);
   const handlePrevious = (e) => {
     e.preventDefault();
     navigate("../");
   };
-  const initialValue = "<p>any <a >link</a>, plain text</p>";
 
   const GameSelectItem = ({ image, label, ...others }) => (
     <div {...others}>
@@ -79,26 +78,37 @@ function PostForm(props) {
   const [textContent, onTextContentChange] = useState("");
   const [fileContent, setFileContent] = useState([]);
   const [loading, setLoading] = useState(false);
-  const handleSubmit = (isDraft) => {
+  const [isDraft, setIsDraft] = useState(false);
+  const [draftId, setDraftId] = useState(null);
+  const handleSubmit = (post, isDraft, draftId) => (e) => {
+    isDraft = isDraft || false;
+    draftId = draftId || false;
     if (isAuthenticated) {
       setLoading(true);
       let formData = new FormData();
       formData.append("title", title);
       formData.append("gameId", gameId);
       formData.append("userId", userId);
+      if (post) {
+        setIsDraft(false);
+        console.log("yES");
+      } else {
+        if (isDraft && !draftId) {
+          formData.append("isDraft", true);
+        } else if (!isDraft && draftId) {
+          formData.append("postId", draftId);
+        }
+      }
       if (activeTab === 0) {
         formData.append("isTextContent", true);
         formData.append("textContent", textContent);
-        if (isDraft) {
-          formData.append("isDraft", true);
-        }
       } else {
         formData.append("isTextContent", false);
         formData.append("file_content", fileContent);
       }
       const config = {
         headers: {
-          Authorization: `Bearer ${cookie.accessToken}`,
+          Authorization: `Bearer ${cookies.accessToken}`,
           "Content-Type": "multipart/form-data",
         },
       };
@@ -113,7 +123,7 @@ function PostForm(props) {
               id: "post-success",
               disallowClose: true,
               autoClose: 5000,
-              title: isDraft ? `Draft saved.` : `Posted successfully.`,
+              title: isDraft ? `Draft saved.` : res.data.message,
               color: "green",
               icon: <AiOutlineCheck size={18} />,
               loading: false,
@@ -153,6 +163,14 @@ function PostForm(props) {
   };
   const handleRemove = () => {
     setFileContent([]);
+  };
+  const handleDraft = (draftData) => {
+    setIsDraft(true);
+    setDraftId(draftData.id);
+    setTitle(draftData.title);
+    setGameId(draftData.gameId.toString());
+    setActiveTab(0);
+    onTextContentChange(draftData.textContent);
   };
   return (
     <Container style={{ display: "flex", flexDirection: "row" }}>
@@ -236,7 +254,7 @@ function PostForm(props) {
             <Button
               variant="outline"
               disabled={loading}
-              onClick={() => handleSubmit("draft")}
+              onClick={handleSubmit(false, "draft")}
             >
               SAVE DRAFT
             </Button>
@@ -245,7 +263,9 @@ function PostForm(props) {
           <Button
             variant="filled"
             type="submit"
-            onClick={handleSubmit}
+            onClick={
+              isDraft ? handleSubmit(false, false, draftId) : handleSubmit(true)
+            }
             loading={loading}
           >
             POST
@@ -253,7 +273,7 @@ function PostForm(props) {
         </Group>
       </Group>
       <Container>
-        <MyDrafts userId={userId} />
+        <MyDrafts handleDraftPick={handleDraft} />
         <br />
         <Rules />
       </Container>
