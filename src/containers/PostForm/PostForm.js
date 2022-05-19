@@ -253,7 +253,7 @@ function PostForm(props) {
         </Group>
       </Group>
       <Container>
-        <MyDrafts />
+        <MyDrafts userId={userId} />
         <br />
         <Rules />
       </Container>
