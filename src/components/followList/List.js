@@ -7,10 +7,25 @@ import {
   Box,
   Text,
   Paper,
+  Badge,
 } from "@mantine/core";
 // import { GasStation, Gauge, ManualGearbox, Users } from "tabler-icons-react";
 import { FiPlus } from "react-icons/fi";
-import RoomCard from "../roomCard/RoomCard";
+import { BsCheck2 } from "react-icons/bs";
+import { HiChevronDoubleUp } from "react-icons/hi";
+import { forwardRef, useState } from "react";
+import { ReactComponent as CsgoSvg } from "../../images/gamesLogo/csgo.svg";
+import { ReactComponent as CsgoDarkSvg } from "../../images/gamesLogo/csgoDark.svg";
+import { ReactComponent as Dota2Svg } from "../../images/gamesLogo/dota2.svg";
+import { ReactComponent as GenshinImpactSvg } from "../../images/gamesLogo/genshin-impact.svg";
+import { ReactComponent as GenshinImpactDarkSvg } from "../../images/gamesLogo/genshin-impact-dark.svg";
+import { ReactComponent as LolSvg } from "../../images/gamesLogo/lol.svg";
+import { ReactComponent as MobileLegendsSvg } from "../../images/gamesLogo/mobile-legends.svg";
+import { ReactComponent as PubgmSvg } from "../../images/gamesLogo/pubgm.svg";
+import { ReactComponent as ValorantSvg } from "../../images/gamesLogo/valorant.svg";
+
+import RoomActivity from "../../containers/RoomActivity";
+import FollowListRooms from "../FollowListRooms";
 const useStyles = createStyles((theme, _params, getRef) => ({
   icon: { ref: getRef("icon") },
 
@@ -24,12 +39,13 @@ const useStyles = createStyles((theme, _params, getRef) => ({
       backgroundColor: "transparent",
       //   opacity: 1,
     },
-    padding: "12px 17.8px 12px 19px",
+    padding: "13px 17.8px 13px 19px",
   },
 
   item: {
+    backgroundColor: theme.colors.gray[2],
     borderBottom: 0,
-    width: 500,
+    width: 530,
     overflow: "hidden",
     transition: `box-shadow 150ms ${theme.transitionTimingFunction}`,
     border: "1px solid transparent",
@@ -37,18 +53,20 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     borderColor:
       theme.colorScheme === "dark"
         ? theme.colors.dark[5]
-        : theme.colors.gray[3],
+        : theme.colors.gray[4],
     marginBottom: 8,
     // backgroundColor: "#2C384B",
   },
 
   itemOpened: {
     backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.white,
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[5]
+        : theme.colors.gray[2],
     borderColor:
       theme.colorScheme === "dark"
         ? theme.colors.dark[5]
-        : theme.colors.gray[3],
+        : theme.colors.gray[4],
 
     [`& .${getRef("control")}`]: {
       opacity: 1,
@@ -65,110 +83,81 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 }));
 function List(props) {
   //   const roomDetail = props.roomDetail;
-  const charactersList = [
+  const followList = [
     {
-      image: "https://img.icons8.com/clouds/256/000000/futurama-bender.png",
+      image: <Dota2Svg height={30} width={30} />,
       label: "Dota 2",
-      content:
-        "Bender Bending Rodríguez, (born September 4, 2996), designated Bending Unit 22, and commonly known as Bender, is a bending unit created by a division of MomCorp in Tijuana, Mexico, and his serial number is 2716057. His mugshot id number is 01473. He is Fry's best friend.",
+      value: "dota2",
     },
 
     {
-      image: "https://img.icons8.com/clouds/256/000000/futurama-mom.png",
+      image: <LolSvg height={30} width={30} />,
+      label: "League of Legends",
+      value: "leagueoflegends",
+    },
+    {
+      image: <CsgoDarkSvg height={30} width={30} />,
+      label: "Counter-Strike: Global Offensive",
+      value: "csgo",
+    },
+    {
+      image: <ValorantSvg height={30} width={30} />,
       label: "Valorant",
-      content:
-        "Carol Miller (born January 30, 2880), better known as Mom, is the evil chief executive officer and shareholder of 99.7% of Momcorp, one of the largest industrial conglomerates in the universe and the source of most of Earth's robots. She is also one of the main antagonists of the Futurama series.",
+      value: "valorant",
     },
     {
-      image: "https://img.icons8.com/clouds/256/000000/homer-simpson.png",
+      image: <GenshinImpactDarkSvg height={30} width={30} />,
       label: "Genshin Impact",
-      content:
-        "Homer Jay Simpson (born May 12) is the main protagonist and one of the five main characters of The Simpsons series(or show). He is the spouse of Marge Simpson and father of Bart, Lisa and Maggie Simpson.",
-    },
-    // {
-    //   image:
-    //     "https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png",
-    //   label: "Spongebob Squarepants",
-    //   content:
-    //     "SpongeBob is a childish and joyful sea sponge who lives in a pineapple with his pet snail Gary in the underwater city of Bikini Bottom. He works as a fry cook at the Krusty Krab, a job which he is exceptionally skilled at and enjoys thoroughly. ",
-    // },
-  ];
-  const tahh = [
-    {
-      userName: "dummbygod",
-      gameName: "dota",
-      title: "Childe ascention material farming",
-      description: "oin, I will be waiting",
-      rank: "https://raw.githubusercontent.com/Soneliem/WAIUA/master/Demo/images/ranksimg/20.png",
-      tools: {
-        mic: true,
-        earphone: true,
-        discord: true,
-      },
-      targetTime: "NOW",
-      partyMembersCount: 4,
-      badge: "try harder",
+      value: "genshinimpact",
     },
     {
-      userName: "jesus",
-      gameName: "dota",
-      title: "christ",
-      description: "do not join, i dont like to wait ",
-      rank: "https://raw.githubusercontent.com/Soneliem/WAIUA/master/Demo/images/ranksimg/15.png",
-      tools: {
-        mic: true,
-        earphone: true,
-        discord: true,
-      },
-      targetTime: "15 : 30",
-      partyMembersCount: 2,
-      badge: "newbie",
+      image: <MobileLegendsSvg height={30} width={30} />,
+      label: "Mobile Legends: Bang Bang",
+      value: "mobilelegends",
     },
     {
-      userName: "XDDDD",
-      gameName: "dota",
-      title: "awww, lets try out the new patch lads",
-      description: "title says it all ",
-      rank: "https://raw.githubusercontent.com/Soneliem/WAIUA/master/Demo/images/ranksimg/23.png",
-      tools: {
-        mic: true,
-        earphone: true,
-        discord: true,
-      },
-      targetTime: "NOW",
-      partyMembersCount: 3,
-      badge: "pro",
-    },
-    {
-      userName: "sadas",
-      gameName: "dota",
-      title: "ahem nvm",
-      description:
-        "oin, I will be waitingoin, I will be waitingoin, I will be waiting",
-      rank: "https://raw.githubusercontent.com/Soneliem/WAIUA/master/Demo/images/ranksimg/13.png",
-      tools: {
-        mic: true,
-        earphone: true,
-        discord: true,
-      },
-      targetTime: "21 : 00",
-      partyMembersCount: 4,
-      badge: "try harder",
+      image: <PubgmSvg height={30} width={30} />,
+      label: "PUBG Mobile",
+      value: "pubgm",
     },
   ];
+  const [recentGame, setRecentGame] = useState("");
 
-  const das = tahh.map((item) => (
-    <RoomCard key={item.userName} roomDetail={item} />
-  ));
-  const items = charactersList.map((item) => (
-    <Accordion.Item label={<AccordionLabel {...item} />} key={item.label}>
-      {das.map((item) => {
-        return item;
-      })}
+  // const handleItemClick = (value) => (e) => {
+  //   setRecentGame(value);
+  // };
+  // const das = tahh.map((item) => (
+  //   <RoomCard key={item.userName} roomDetail={item} />
+  // ));
+  const items = followList.map((item) => (
+    <Accordion.Item
+      label={<AccordionLabel {...item} />}
+      key={item.label}
+      // onClick={handleItemClick(item.value)}
+    >
+      {/* {recentGame ? (
+        <FollowListRooms gameId={recentGame} />
+      ) : (
+        <Box
+          my={50}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <BsCheck2 size={30} color="green" />
+          <Text Text size="xl" ml="xs" weight={500}>
+            No more waiting rooms for today T-T
+          </Text>
+        </Box>
+      )} */}
+
+      <FollowListRooms gameId={item.value} />
     </Accordion.Item>
   ));
   return (
-    <Box>
+    <Box mt={24}>
       <StyledAccordion
       // initialItem={2}
       >
@@ -213,8 +202,23 @@ function List(props) {
 function AccordionLabel({ label, image }) {
   return (
     <Group noWrap>
-      <Avatar src={image} radius="xl" size="sm" />
+      {image}
       <Text>{label}</Text>
+      <Badge
+        color="green"
+        component="div"
+        variant="dot"
+        styles={{
+          root: {
+            marginLeft: "auto",
+            "&:hover": {
+              cursor: "inherit",
+            },
+          },
+        }}
+      >
+        3 new
+      </Badge>
     </Group>
   );
 }

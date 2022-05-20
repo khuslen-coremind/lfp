@@ -16,6 +16,7 @@ import { ModalsContext } from "../../ModalsContext";
 
 import AuthService from "../../services/auth.service";
 import { AuthContext } from "../../AuthContext";
+import { useCookies } from "react-cookie";
 
 function LoginModal() {
   const { loginModal, registerModal } = useContext(ModalsContext);
@@ -40,14 +41,20 @@ function LoginModal() {
     console.log(form);
     setForm({ ...form, [name]: value });
   };
+  const [cookies, setCookie] = useCookies(["accessToken"]);
+
   const { setAuthenticated, setUserId } = useContext(AuthContext);
   const handleSubmit = () => {
     setLoading(true);
     const { email, password } = form;
     if (!(email && password)) {
     }
+
     AuthService.login(email, password).then(
       (response) => {
+        console.log(
+          "cookies acccest token after click:" + JSON.stringify(cookies)
+        );
         setAuthenticated(true);
         setUserId(response.userId);
         showNotification({

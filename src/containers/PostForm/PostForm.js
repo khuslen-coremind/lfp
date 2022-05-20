@@ -35,13 +35,22 @@ import { useCookies } from "react-cookie";
 import { AuthContext } from "../../AuthContext";
 import { ModalsContext } from "../../ModalsContext";
 import { MyDrafts } from "../../components/MyDrafts";
-
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
 function PostForm(props) {
   const { isAuthenticated, userId } = useContext(AuthContext);
   const { loginModal } = useContext(ModalsContext);
   const [loginModalOpen, setLoginModalOpen] = loginModal;
   let navigate = useNavigate();
-  const [cookies] = useCookies(["accessToken"]);
+  const [cookies, setCookie] = useCookies(["accessToken"]);
   const handlePrevious = (e) => {
     e.preventDefault();
     navigate("../");
@@ -108,7 +117,7 @@ function PostForm(props) {
       }
       const config = {
         headers: {
-          Authorization: `Bearer ${cookies.accessToken}`,
+          Authorization: `Bearer ${getCookie("accessToken")}`,
           "Content-Type": "multipart/form-data",
         },
       };

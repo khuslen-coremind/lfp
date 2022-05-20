@@ -27,7 +27,7 @@ const useStyles = createStyles((theme) => ({
   header: {
     height: "100%",
     maxWidth: "100%",
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "#090F1A",
   },
 
   links: {
@@ -75,12 +75,12 @@ function DefaultHeader({ navLogoHandler, handleToHome, onLogin, onRegister }) {
               color="black"
               onClick={handleHome}
             >
-              <BsHouse size={35} />
+              <BsHouse size={35} color="#dedede" />
             </ActionIcon>
             <Menu
               control={
                 <ActionIcon variant="transparent" color="black">
-                  <FiPlus size={35} />
+                  <FiPlus size={35} color="#dedede" />
                 </ActionIcon>
               }
             >
