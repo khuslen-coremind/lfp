@@ -33,7 +33,7 @@ const register = (registerInfo) => {
 };
 const login = async (email, password) => {
   return axios
-    .post(USER_URL + "/login", {
+    .post(`${USER_URL}/login`, {
       email,
       password,
     })

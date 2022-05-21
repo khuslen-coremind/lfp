@@ -77,38 +77,38 @@ function RoomFormModal({ opened, ...props }) {
   // 		: [];
   const GameData = [
     {
-      image: "http://localhost:8000/static/public/images/dota2.svg",
+      image: `http://${API_URL}/static/public/images/dota2.svg`,
       label: "Dota 2",
       value: "1",
     },
     {
-      image: "http://localhost:8000/static/public/images/lol.svg",
+      image: `http://${API_URL}/static/public/images/lol.svg`,
       label: "League of Legends",
       value: "2",
     },
     {
-      image: "http://localhost:8000/static/public/images/csgo.svg",
+      image: `http://${API_URL}/static/public/images/csgo.svg`,
       label: "Counter-Strike: Global Offensive",
       value: "3",
     },
     {
-      image: "http://localhost:8000/static/public/images/valorant.svg",
+      image: `http://${API_URL}/static/public/images/valorant.svg`,
       label: "Valorant",
       value: "4",
     },
 
     {
-      image: "http://localhost:8000/static/public/images/genshin-impact.svg",
+      image: `http://${API_URL}/static/public/images/genshin-impact.svg`,
       label: "Genshin Impact",
       value: "5",
     },
     {
-      image: "http://localhost:8000/static/public/images/mobile-legends.svg",
+      image: `http://${API_URL}/static/public/images/mobile-legends.svg`,
       label: "Mobile Legends: Bang Bang",
       value: "6",
     },
     {
-      image: "http://localhost:8000/static/public/images/pubgm.svg",
+      image: `http://${API_URL}/static/public/images/pubgm.svg`,
       label: "PUBG Mobile",
       value: "7",
     },

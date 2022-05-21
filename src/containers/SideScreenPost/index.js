@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { BsCheck2 } from "react-icons/bs";
 import { AuthContext } from "../../AuthContext";
 import { useCookies } from "react-cookie";
+import { API_URL } from "../../constants/request";
 function getCookie(name) {
   var nameEQ = name + "=";
   var ca = document.cookie.split(";");
@@ -32,7 +33,7 @@ function SideScreenPost() {
       console.log(isAuthenticated, cookies.accessToken);
 
       const res = await fetch(
-        `http://localhost:8000/api/post/${gameId}/posts?page=1&limit=${limit}`,
+        `http://${API_URL}/api/post/${gameId}/posts?page=1&limit=${limit}`,
         {
           method: "GET",
           ...(isAuthenticated && {
@@ -56,7 +57,7 @@ function SideScreenPost() {
 
   const fetchPosts = async () => {
     const res = await fetch(
-      `http://localhost:8000/api/post/${gameId}/posts?page=${pageNumber}&limit=${
+      `http://${API_URL}/api/post/${gameId}/posts?page=${pageNumber}&limit=${
         limit + 3
       }`,
       {

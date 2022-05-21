@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BsCheck2 } from "react-icons/bs";
 import RoomActivity from "../RoomActivity";
+import { API_URL } from "../../constants/request";
 function SideScreenRoom() {
   const { gameId } = useParams();
   const [pageNumber, setPageNumber] = useState(2);
@@ -16,7 +17,7 @@ function SideScreenRoom() {
   useEffect(() => {
     const getRooms = async () => {
       const res = await fetch(
-        `http://localhost:8000/api/room/${gameId}/rooms?page=1&limit=${limit}`
+        `http://${API_URL}/api/room/${gameId}/rooms?page=1&limit=${limit}`
         // For json server use url below
         // `http://localhost:3004/comments?_page=1&_limit=20`
       );
@@ -32,7 +33,7 @@ function SideScreenRoom() {
 
   const fetchRooms = async () => {
     const res = await fetch(
-      `http://localhost:8000/api/room/${gameId}/rooms?page=${pageNumber}&limit=${limit}`
+      `http://${API_URL}/api/room/${gameId}/rooms?page=${pageNumber}&limit=${limit}`
       // For json server use url below
       // `http://localhost:3004/comments?_page=${page}&_limit=20`
     );

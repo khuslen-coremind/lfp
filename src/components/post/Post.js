@@ -71,12 +71,17 @@ function Post({ key, postData }) {
   const { isAuthenticated, setAuthenticated } = useContext(AuthContext);
   const { classes } = useStyles();
   const [opened, setOpen] = useState(false);
-  const [hasUpVotedBefore, setHasUpVotedBefore] = useState(postData.hasUpVoted);
+  const [hasUpVotedBefore, setHasUpVotedBefore] = useState(
+    postData.hasUpVoted ? true : false
+  );
   const [hasDownVotedBefore, setHasDownVotedBefore] = useState(
-    postData.hasDownVoted
+    postData.hasDownVoted ? true : false
   );
   const [hasUpVoted, setHasUpVoted] = useState(false);
   const [hasDownVoted, setHasDownVoted] = useState(false);
+  const [totalVote, setTotalVote] = useState(
+    parseInt(postData.totalVotes[0]["total"])
+  );
   const collapse = (e) => {
     setOpen(!opened);
   };
@@ -90,7 +95,7 @@ function Post({ key, postData }) {
   const postedAt = "10 minutes ago";
 
   const handleVote = (id, isUpVote) => (e) => {
-    console.log("postData:", postData);
+    console.log("vote", postData.hasUpVoted, postData.hasDownVoted, isUpVote);
     if (isAuthenticated) {
       const requestData = { vote: isUpVote ? 1 : -1, postId: id };
       const config = {
@@ -99,23 +104,35 @@ function Post({ key, postData }) {
         },
       };
       axios
-        .post(`${API_URL}/api/poll/post/${id}`, requestData, config)
+        .post(`http://${API_URL}/api/poll/post/${id}`, requestData, config)
         .then((response) => {
-          if (isUpVote) {
-            if (hasUpVoted) {
-              setHasUpVoted(false);
-              setHasDownVoted(false);
+          if (response.status === 200) {
+            if (isUpVote) {
+              if (hasUpVotedBefore === true || hasUpVoted) {
+                setHasUpVotedBefore(false);
+                setHasUpVoted(false);
+              } else {
+                if (hasDownVotedBefore === true || hasDownVoted) {
+                  setHasUpVoted(true);
+                  setHasDownVotedBefore(false);
+                  setHasDownVoted(false);
+                } else {
+                  setHasUpVoted(true);
+                }
+              }
             } else {
-              setHasUpVoted(true);
-              setHasDownVoted(false);
-            }
-          } else {
-            if (hasDownVoted) {
-              setHasDownVoted(false);
-              setHasUpVoted(false);
-            } else {
-              setHasDownVoted(true);
-              setHasUpVoted(false);
+              if (hasDownVotedBefore === true || hasDownVoted) {
+                setHasDownVotedBefore(false);
+                setHasDownVoted(false);
+              } else {
+                if (hasUpVotedBefore === true || hasUpVoted) {
+                  setHasDownVoted(true);
+                  setHasUpVotedBefore(false);
+                  setHasUpVoted(false);
+                } else {
+                  setHasDownVoted(true);
+                }
+              }
             }
           }
         })
@@ -152,7 +169,7 @@ function Post({ key, postData }) {
         px={10}
         pt={8}
       >
-        <ActionIcon onClick={handleVote(postData.postInfo.id, 1)}>
+        <ActionIcon onClick={handleVote(postData.postInfo.id, true)}>
           {hasUpVotedBefore || hasUpVoted ? (
             <BsCaretUpFill size={22} color="#5D62EA" />
           ) : (
@@ -161,18 +178,21 @@ function Post({ key, postData }) {
         </ActionIcon>
 
         <Text weight="bold">
-          {hasUpVotedBefore || hasDownVotedBefore
-            ? postData.totalVotes[0]["total"]
-            : hasUpVoted
-            ? parseInt(postData.totalVotes[0]["total"]) + 1
-            : hasDownVoted
-            ? parseInt(postData.totalVotes[0]["total"]) - 1
-            : postData.totalVotes[0]["total"]}
-          {/* { postData.totalVotes[0]['total']} */}
+          {hasUpVoted
+            ? hasDownVotedBefore && totalVote === -1
+              ? totalVote + 2
+              : hasUpVotedBefore
+              ? totalVote - 1
+              : totalVote + 1
+            : hasDownVotedBefore && totalVote === 1
+            ? totalVote - 2
+            : hasDownVotedBefore
+            ? totalVote + 1
+            : totalVote - 1}
         </Text>
 
-        <ActionIcon onClick={handleVote(postData.postInfo.id, 0)}>
-          {postData.hasDownVoted || hasDownVoted ? (
+        <ActionIcon onClick={handleVote(postData.postInfo.id, false)}>
+          {hasDownVotedBefore || hasDownVoted ? (
             <BsCaretDownFill size={22} color="#FF7033" />
           ) : (
             <BsCaretDown size={22} />

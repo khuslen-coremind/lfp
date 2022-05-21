@@ -3,6 +3,7 @@ import { Box, Text, Loader, Anchor } from "@mantine/core";
 import { BsEmojiSmileUpsideDown } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import RoomCard from "../roomCard/RoomCard";
+import { API_URL } from "../../constants/request";
 
 function FollowListRooms({ gameId }) {
   const [items, setItems] = useState([]);
@@ -10,7 +11,7 @@ function FollowListRooms({ gameId }) {
   useEffect(() => {
     const getRooms = async () => {
       const res = await fetch(
-        `http://localhost:8000/api/room/${gameId}/rooms?page=1&limit=3`
+        `http://${API_URL}/api/room/${gameId}/rooms?page=1&limit=3`
       );
       const data = await res.json();
       setItems(data.results);
@@ -42,9 +43,15 @@ function FollowListRooms({ gameId }) {
         {items.map((e) => {
           return <RoomCard roomDetail={e} key={e.id} />;
         })}
-        <Anchor component={Link} to={gameId} mt={15}>
-          See more ...
-        </Anchor>
+        {items.length > 2 ? (
+          <Anchor component={Link} to={gameId} mt={15}>
+            See more ...
+          </Anchor>
+        ) : (
+          <Text mb="md" mt="xl">
+            Thats it for today 😊
+          </Text>
+        )}
       </div>
     ) : (
       <Box

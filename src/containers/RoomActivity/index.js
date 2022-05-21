@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { BsCheck2 } from "react-icons/bs";
 import { useParams } from "react-router-dom";
 import _ from "lodash";
+import { API_URL } from "../../constants/request";
 
 function RoomActivity({ gameId }) {
   const [pageNumber, setPageNumber] = useState(2);
@@ -16,8 +17,8 @@ function RoomActivity({ gameId }) {
     const getRooms = async () => {
       const res = await fetch(
         gameId
-          ? `http://localhost:8000/api/room/${gameId}/rooms?page=1&limit=${limit}`
-          : `http://localhost:8000/api/room/latest/rooms?page=1&limit=${limit}`
+          ? `http://${API_URL}/api/room/${gameId}/rooms?page=1&limit=${limit}`
+          : `http://${API_URL}/api/room/latest/rooms?page=1&limit=${limit}`
       );
       const data = await res.json();
       console.log(data);
@@ -32,8 +33,8 @@ function RoomActivity({ gameId }) {
   const fetchRooms = async () => {
     const res = await fetch(
       gameId
-        ? `http://localhost:8000/api/room/${gameId}/rooms?page=${pageNumber}&limit=${limit}`
-        : `http://localhost:8000/api/room/latest/rooms?page=${pageNumber}&limit=${limit}`
+        ? `http://${API_URL}/api/room/${gameId}/rooms?page=${pageNumber}&limit=${limit}`
+        : `http://${API_URL}/api/room/latest/rooms?page=${pageNumber}&limit=${limit}`
     );
     const data = await res.json();
     return data.results;
