@@ -15,7 +15,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { FiPlus } from "react-icons/fi";
 import { IoChatbox } from "react-icons/io5";
 import { AiOutlineLink } from "react-icons/ai";
-import { MdReportProblem } from "react-icons/md";
+import { MdReportProblem, MdDelete } from "react-icons/md";
 import Tools from "../tools/Tools";
 import LfpTimer from "../lfpTimer/LfpTimer";
 import { useNavigate } from "react-router-dom";
@@ -23,13 +23,16 @@ import UserBadge from "../userBadge/UserBadge";
 import "./roomCard.css";
 import dotaPng from "../../../src/images/gamesPictures/dota2.png";
 import lolPng from "../../../src/images/gamesPictures/lol.png";
-import csgoPng from "../../../src/images/gamesPictures/csgo.png";
+import csgoPng from "../../../src/images/gamesPictures/csgo32.png";
 import valorantPng from "../../../src/images/gamesPictures/valorant.png";
-import genshintPng from "../../../src/images/gamesPictures/genshin.png";
+import genshintPng from "../../../src/images/gamesPictures/genshin200.jpeg";
 import mlPng from "../../../src/images/gamesPictures/ml.png";
 import pubgmPng from "../../../src/images/gamesPictures/pubgm.png";
 import { gameRanks } from "../../constants/gameRanks";
 import _ from "lodash";
+import { useContext } from "react";
+import { AuthContext } from "../../AuthContext";
+
 const useStyles = createStyles((theme) => ({
   card: {
     backgroundColor:
@@ -89,7 +92,9 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function RoomCard({ key, roomDetail }) {
+function RoomCard({ roomDetail, onDeletion }) {
+  const { userId } = useContext(AuthContext);
+  console.log(userId);
   console.log(roomDetail);
   const { classes } = useStyles();
   const gameIdPicPair = {
@@ -103,12 +108,14 @@ function RoomCard({ key, roomDetail }) {
   };
   let navigate = useNavigate();
   const handleJoin = () => {
-    navigate("/room/12");
+    navigate(`/room/${roomDetail.id}`);
+  };
+  const handleRoomDeletion = (id) => (e) => {
+    onDeletion(id);
   };
 
   return !_.isEmpty(roomDetail) ? (
     <Card
-      key={key}
       pt={10}
       pr={8}
       pb={7}
@@ -138,6 +145,7 @@ function RoomCard({ key, roomDetail }) {
                 fit="contain"
                 height={15}
                 width={25}
+                radius="md"
                 src={gameIdPicPair[roomDetail.gameId]}
                 alt="game logo"
               />
@@ -162,17 +170,28 @@ function RoomCard({ key, roomDetail }) {
             }
           >
             <Menu.Item icon={<AiOutlineLink size={14} />}>Room link</Menu.Item>
-            <Menu.Item
-              color="red"
-              icon={
-                <MdReportProblem
-                  size={14}
-                  // component={Link} to="/hello"
-                />
-              }
-            >
-              Report room
-            </Menu.Item>
+
+            {userId && roomDetail.userId.toString() === userId ? (
+              <Menu.Item
+                color="red"
+                icon={<MdDelete size={16} />}
+                onClick={handleRoomDeletion(roomDetail.id)}
+              >
+                Delete room
+              </Menu.Item>
+            ) : (
+              <Menu.Item
+                color="red"
+                icon={
+                  <MdReportProblem
+                    size={14}
+                    // component={Link} to="/hello"
+                  />
+                }
+              >
+                Report room
+              </Menu.Item>
+            )}
           </Menu>
         </Box>
 
@@ -240,7 +259,7 @@ function RoomCard({ key, roomDetail }) {
       </Group>
     </Card>
   ) : (
-    <div> asdasd</div>
+    <div> </div>
   );
 }
 

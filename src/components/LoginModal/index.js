@@ -41,9 +41,8 @@ function LoginModal() {
     console.log(form);
     setForm({ ...form, [name]: value });
   };
-  const [cookies, setCookie] = useCookies(["accessToken"]);
 
-  const { setAuthenticated, setUserId } = useContext(AuthContext);
+  const { setAuthenticated, setUserId, setUsername } = useContext(AuthContext);
   const handleSubmit = () => {
     setLoading(true);
     const { email, password } = form;
@@ -52,11 +51,9 @@ function LoginModal() {
 
     AuthService.login(email, password).then(
       (response) => {
-        console.log(
-          "cookies acccest token after click:" + JSON.stringify(cookies)
-        );
         setAuthenticated(true);
         setUserId(response.userId);
+        setUsername(response.username);
         showNotification({
           id: "login-success",
           disallowClose: true,

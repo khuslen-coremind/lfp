@@ -22,6 +22,8 @@ import { CgLogIn } from "react-icons/cg";
 import GamesNavigator from "../GamesNavigator";
 import AuthService from "../../services/auth.service";
 import { AuthContext } from "../../AuthContext";
+import { useContext } from "react";
+import { ModalsContext } from "../../ModalsContext";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -45,7 +47,8 @@ const useStyles = createStyles((theme) => ({
 }));
 function UserHeader({ navLogoHandler, handleToHome, onLogout }) {
   const { classes } = useStyles();
-
+  const { loginModal, registerModal, roomModal } = useContext(ModalsContext);
+  const [roomModalOpen, setRoomModalOpen] = roomModal;
   const handleGameLogoClick = (gameId) => {
     navLogoHandler(gameId);
   };
@@ -57,22 +60,16 @@ function UserHeader({ navLogoHandler, handleToHome, onLogout }) {
   };
   const LogoutButton = () => {
     return (
-      <AuthContext.Consumer>
-        {({ setAuthenticated, setUserId }) => (
-          <Menu.Item
-            icon={<CgLogIn size={16} />}
-            onClick={() => {
-              console.log("log out");
-
-              AuthService.logout();
-
-              window.location.reload();
-            }}
-          >
-            Log Out
-          </Menu.Item>
-        )}
-      </AuthContext.Consumer>
+      <Menu.Item
+        icon={<CgLogIn size={16} />}
+        onClick={() => {
+          console.log("log out");
+          AuthService.logout();
+          window.location.reload();
+        }}
+      >
+        Log Out
+      </Menu.Item>
     );
   };
 
@@ -106,9 +103,7 @@ function UserHeader({ navLogoHandler, handleToHome, onLogout }) {
               </Menu.Item>
               <Menu.Item
                 icon={<BsPeople size={14} />}
-                component="a"
-                href="http://localhost:3000/create/room"
-                target="_blank"
+                onClick={() => setRoomModalOpen(true)}
               >
                 Create a waiting room
               </Menu.Item>

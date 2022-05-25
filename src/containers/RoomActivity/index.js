@@ -1,18 +1,72 @@
 import { Box, Loader, Text } from "@mantine/core";
 import RoomCard from "../../components/roomCard/RoomCard";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsCheck2 } from "react-icons/bs";
 import { useParams } from "react-router-dom";
 import _ from "lodash";
 import { API_URL } from "../../constants/request";
 
+import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../../AuthContext";
+import { showNotification } from "@mantine/notifications";
+
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
 function RoomActivity({ gameId }) {
   const [pageNumber, setPageNumber] = useState(2);
   const [limit, setLimit] = useState(15);
   const [items, setItems] = useState([]);
   const [hasMore, sethasMore] = useState(true);
-
+  const { isAuthenticated, setAuthenticated } = useContext(AuthContext);
+  const handleRoomDeletion = (id) => {
+    if (isAuthenticated) {
+      const requestData = { roomId: id };
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getCookie("accessToken")}`,
+        },
+      };
+      axios
+        .post(`http://${API_URL}/api/room/delete`, requestData, config)
+        .then((response) => {
+          if (response.status === 200) {
+            let rooms = items;
+            rooms = rooms.filter((e) => e.id !== id);
+            setItems(rooms);
+            showNotification({
+              id: "deletion-complete",
+              disallowClose: true,
+              autoClose: 7000,
+              title: "Deleted the post",
+              color: "yellow",
+              loading: false,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      showNotification({
+        id: "deletion-error",
+        disallowClose: true,
+        autoClose: 7000,
+        title: "Can't delete rn ;-;",
+        color: "red",
+        loading: false,
+      });
+    }
+  };
   useEffect(() => {
     const getRooms = async () => {
       const res = await fetch(
@@ -87,7 +141,11 @@ function RoomActivity({ gameId }) {
       // }
     >
       {items.map((e) => {
-        return <RoomCard roomDetail={e} key={e.id} />;
+        return (
+          <React.Fragment key={e.id}>
+            <RoomCard roomDetail={e} onDeletion={handleRoomDeletion} />
+          </React.Fragment>
+        );
       })}
     </InfiniteScroll>
   );

@@ -1,4 +1,5 @@
 import { TextInput, Group, Button, createStyles, Avatar } from "@mantine/core";
+
 // import { GasStation, Gauge, ManualGearbox, Users } from "tabler-icons-react";
 import { BsPen } from "react-icons/bs";
 import { IconContext } from "react-icons/lib";
@@ -14,6 +15,7 @@ const PostInput = { flexGrow: 1 };
 function CreatePost(props) {
   const { classes } = useStyles();
   let navigate = useNavigate();
+
   return (
     <div>
       <Group position="apart" p="xs" className={classes.button} pr={17} pl={16}>

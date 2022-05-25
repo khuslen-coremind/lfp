@@ -13,7 +13,6 @@ import {
   Avatar,
   Modal,
   createStyles,
-  Checkbox,
 } from "@mantine/core";
 import { TimeInput } from "@mantine/dates";
 import { useState, useContext } from "react";
@@ -30,23 +29,18 @@ import {
 } from "react-icons/bs";
 import { RiUserHeartLine } from "react-icons/ri";
 import { FaDiscord } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { API_URL } from "../../constants/request";
 import { AuthContext } from "../../AuthContext";
-import { useCookies } from "react-cookie";
 import axios from "axios";
 import { showNotification } from "@mantine/notifications";
 import { AiOutlineCheck } from "react-icons/ai";
 import { ModalsContext } from "../../ModalsContext";
 import { gameRanks } from "../../constants/gameRanks";
 import moment from "moment";
+import { useEffect } from "react";
 
-const getMyDrafts = async () => {
-  // console.log("userId: " + userId);
-  const response = await fetch(`${API_URL}/api/gameranks`);
-  return response.json();
-};
 function getCookie(name) {
   var nameEQ = name + "=";
   var ca = document.cookie.split(";");
@@ -57,24 +51,16 @@ function getCookie(name) {
   }
   return null;
 }
-function RoomFormModal({ opened, ...props }) {
-  const { data, status } = useQuery("myDrafts", getMyDrafts, {
-    enabled: false,
-  });
-  // console.log(data);
-
+function getKeyByValue(object, value) {
+  return Object.keys(object).find((key) => object[key] === value);
+}
+function RoomFormModal() {
   const handlePrevious = (e) => {
     e.preventDefault();
     navigate("../");
   };
   let navigate = useNavigate();
-  const initialValue = "<p>any <a >link</a>, plain text</p>";
-  // const GameData =
-  // 	status === "success"
-  // 		? data.gamesRanks.map((e) => {
-  // 				return { image: e.gameImageUrl, label: e.gameName, value: e.gameId };
-  // 		  })
-  // 		: [];
+
   const GameData = [
     {
       image: `http://${API_URL}/static/public/images/dota2.svg`,
@@ -87,7 +73,7 @@ function RoomFormModal({ opened, ...props }) {
       value: "2",
     },
     {
-      image: `http://${API_URL}/static/public/images/csgo.svg`,
+      image: `http://${API_URL}/static/public/images/csgo-dark.svg`,
       label: "Counter-Strike: Global Offensive",
       value: "3",
     },
@@ -98,7 +84,7 @@ function RoomFormModal({ opened, ...props }) {
     },
 
     {
-      image: `http://${API_URL}/static/public/images/genshin-impact.svg`,
+      image: `http://${API_URL}/static/public/images/genshin-impact-dark.svg`,
       label: "Genshin Impact",
       value: "5",
     },
@@ -113,29 +99,6 @@ function RoomFormModal({ opened, ...props }) {
       value: "7",
     },
   ];
-  // const RankData = [
-  // 	{
-  // 		image: "https://img.icons8.com/clouds/256/000000/futurama-bender.png",
-  // 		label: "Valorant",
-  // 		value: "Bender Bending Rodríguez",
-  // 	},
-
-  // 	{
-  // 		image: "https://img.icons8.com/clouds/256/000000/futurama-mom.png",
-  // 		label: "Dota 2",
-  // 		value: "Carol Miller",
-  // 	},
-  // 	{
-  // 		image: "https://img.icons8.com/clouds/256/000000/homer-simpson.png",
-  // 		label: "Mobile Legends: Bang Bang",
-  // 		value: "Homer Simpson",
-  // 	},
-  // 	{
-  // 		image: "https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png",
-  // 		label: "PUBG Mobile",
-  // 		value: "PUBG Mobile",
-  // 	},
-  // ];
 
   const GameSelectItem = ({ image, label, ...others }) => (
     <div {...others}>
@@ -162,9 +125,16 @@ function RoomFormModal({ opened, ...props }) {
       </Group>
     </div>
   );
-  const setModal = () => {
-    props.setOpened();
+  const pair = {
+    1: "dota2",
+    2: "leagueoflegends",
+    3: "csgo",
+    4: "valorant",
+    5: "genshinimpact",
+    6: "mobilelegends",
+    7: "pubgm",
   };
+
   const useStyles = createStyles((theme, _params, getRef) => ({
     label: {
       display: "flex",
@@ -191,10 +161,12 @@ function RoomFormModal({ opened, ...props }) {
       color: theme.white,
     },
   }));
+
+  const { gameId } = useParams();
   const { isAuthenticated, userId } = useContext(AuthContext);
-  const { loginModal } = useContext(ModalsContext);
+  const { loginModal, roomModal } = useContext(ModalsContext);
   const [loginModalOpen, setLoginModalOpen] = loginModal;
-  const [cookies, setCookie] = useCookies(["accessToken"]);
+  const [roomModalOpen, setRoomModalOpen] = roomModal;
   const { classes } = useStyles();
   const [loading, setLoading] = useState(false);
   const [gameSelectValue, setGameSelect] = useState("1");
@@ -207,8 +179,13 @@ function RoomFormModal({ opened, ...props }) {
   const [preferences, setPreferences] = useState("");
   const [utils, setUtils] = useState([]);
   const [customRank, setCustomRank] = useState();
-
   const date = moment().format();
+
+  useEffect(() => {
+    if (gameId) {
+      setGameSelect(getKeyByValue(pair, gameId));
+    }
+  }, [gameId]);
 
   const handleSubmit = () => {
     setLoading(true);
@@ -231,11 +208,11 @@ function RoomFormModal({ opened, ...props }) {
         technicalInfo: utils,
       };
       axios
-        .post(`${API_URL}/api/room/create`, requestData, config)
+        .post(`http://${API_URL}/api/room/create`, requestData, config)
         .then((res) => {
           if (res.status === 200) {
             setLoading(false);
-            setModal(false);
+            setRoomModalOpen(false);
             setGameSelect("1");
             setRankSelect("");
             setRoomSize(1);
@@ -246,7 +223,6 @@ function RoomFormModal({ opened, ...props }) {
             setPreferences("");
             setUtils("");
             setCustomRank("");
-
             showNotification({
               id: "post-success",
               disallowClose: true,
@@ -277,8 +253,8 @@ function RoomFormModal({ opened, ...props }) {
   return (
     <>
       <Modal
-        opened={opened}
-        onClose={() => setModal(false)}
+        opened={roomModalOpen}
+        onClose={() => setRoomModalOpen(false)}
         title=""
         size="lg"
         styles={{ header: { marginBottom: -20 } }}

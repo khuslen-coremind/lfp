@@ -41,15 +41,16 @@ const login = async (email, password) => {
       if (response.status === 200) {
         setCookie("accessToken", response.data.token);
         setCookie("userId", response.data.userId);
+        setCookie("lfpusername", response.data.username);
         return response.data;
       }
       return response.data;
     });
 };
 const logout = () => {
-  //   localStorage.removeItem("user");
   eraseCookie("accessToken");
   eraseCookie("userId");
+  eraseCookie("lfpusername");
   //   return axios.post(API_URL + "signout").then((response) => {
   //     return response.data;
   //   });

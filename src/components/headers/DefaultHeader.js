@@ -49,9 +49,10 @@ const useStyles = createStyles((theme) => ({
 
 function DefaultHeader({ navLogoHandler, handleToHome, onLogin, onRegister }) {
   const { classes } = useStyles();
-  const { loginModal, registerModal } = useContext(ModalsContext);
+  const { loginModal, registerModal, roomModal } = useContext(ModalsContext);
   const [loginModalOpen, setLoginModalOpen] = loginModal;
   const [registerModalOpen, setRegisterModalOpen] = registerModal;
+  const [roomModalOpen, setRoomModalOpen] = roomModal;
   const handleGameLogoClick = (gameId) => {
     navLogoHandler(gameId);
   };
@@ -99,9 +100,7 @@ function DefaultHeader({ navLogoHandler, handleToHome, onLogin, onRegister }) {
               </Menu.Item>
               <Menu.Item
                 icon={<BsPeople size={14} />}
-                component="a"
-                href="http://localhost:3000/create/room"
-                target="_blank"
+                onClick={() => setRoomModalOpen(true)}
               >
                 Create a waiting room
               </Menu.Item>

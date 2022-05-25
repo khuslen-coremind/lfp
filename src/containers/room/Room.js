@@ -11,46 +11,138 @@ import {
   ScrollArea,
   Spoiler,
   ActionIcon,
+  Image,
+  Loader,
 } from "@mantine/core";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AiOutlineLink } from "react-icons/ai";
 import { FiSend } from "react-icons/fi";
 import { IoReturnUpBack } from "react-icons/io5";
 import { RiGameLine } from "react-icons/ri";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import UserBadge from "../../components/userBadge/UserBadge";
 import Tools from "../../components/tools/Tools";
 import { io } from "socket.io-client";
 import axios from "axios";
 import { API_URL } from "../../constants/request";
-const socket = io(`http://${API_URL}`);
+import dotaPng from "../../../src/images/gamesPictures/dota2.png";
+import lolPng from "../../../src/images/gamesPictures/lol.png";
+import csgoPng from "../../../src/images/gamesPictures/csgo32.png";
+import valorantPng from "../../../src/images/gamesPictures/valorant.png";
+import genshintPng from "../../../src/images/gamesPictures/genshin200.jpeg";
+import mlPng from "../../../src/images/gamesPictures/ml.png";
+import pubgmPng from "../../../src/images/gamesPictures/pubgm.png";
+import moment from "moment";
+import LfpTimer from "../../components/lfpTimer/LfpTimer";
+import { useQueries, useQuery, useQueryClient } from "react-query";
+import { useContext } from "react";
+import { AuthContext } from "../../AuthContext";
+
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+
+let socket;
 
 function Room(props) {
+  const { userId, username } = useContext(AuthContext);
+  const { roomId } = useParams();
   const roomLink = window.location.href;
   const date = new Date(Date.now());
-  const [currentMsgText, setCurrentMsgText] = useState("");
   const [roomMessages, setRoomMessages] = useState([]);
+  const [roomData, setRoomData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [now, setNow] = useState(false);
+  const [messageText, setMessageText] = useState("");
+  const messagesEndRef = useRef(null);
+
+  let navigate = useNavigate();
+  const gameIdPicPair = {
+    1: dotaPng,
+    2: lolPng,
+    3: csgoPng,
+    4: valorantPng,
+    5: genshintPng,
+    6: mlPng,
+    7: pubgmPng,
+  };
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  const getMessageHistory = async () => {
+    const response = await fetch(`http://${API_URL}/api/chat/${roomId}`);
+    const message = await response.json();
+    return message.messages;
+  };
+
+  const getRoomDetail = async () => {
+    const res = await fetch(`http://${API_URL}/api/room/${roomId}`);
+    const room = await res.json();
+    return room.room;
+  };
+  const { isLoading, isError, data, error } = useQuery(
+    "roomInfo",
+    getRoomDetail
+  );
 
   useEffect(() => {
-    socket.on("receive_message", (data) => {
+    getMessageHistory()
+      .then((results) => {
+        // if ((results = [])) {
+        //   setRoomMessages([]);
+        // } else {
+        setRoomMessages(results);
+        // }
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    socket = io(`http://${API_URL}`);
+
+    if (username && username) {
+      socket.emit("join_room", { userId, roomId, username }, () => {});
+
+      return () => {
+        socket.emit("disconnect");
+      };
+    }
+  }, [userId, socket]);
+
+  useEffect(() => {
+    socket.current.on("message", (data) => {
       console.log(data);
       setRoomMessages((messages) => [...messages, data]);
     });
-  }, [socket]);
+  }, [roomMessages]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [roomMessages]);
 
   const handlePrevious = (e) => {
     e.preventDefault();
-    navigate("../");
+    navigate(-1);
   };
-  const userId = "me1";
 
-  const sendMessage = () => {
-    if (currentMsgText !== "") {
+  const onMessageSend = (e, roomId) => {
+    e.preventDefault();
+    if (messageText !== "") {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getCookie("accessToken")}`,
+        },
+      };
       const messageData = {
-        room: "1",
-        author: "author1",
-        authorId: "me1",
-        message: currentMsgText,
+        room: roomId,
+        text: messageText,
         sentAt:
           (date.getHours() < 10 ? "0" : "") +
           date.getHours() +
@@ -61,36 +153,22 @@ function Room(props) {
           (date.getSeconds() < 10 ? "0" : "") +
           date.getSeconds(),
       };
-      setCurrentMsgText("");
+
       axios
-        .post(`${API_URL}/api/postMessage`)
+        .post(`http://${API_URL}/api/chat/${roomId}`, messageData, config)
         .then((res) => {
-          socket.emit("send_message", messageData);
-          setRoomMessages((messages) => [...messages, messageData]);
+          socket.current.emit("send_message", messageText, () => {
+            setMessageText("");
+          });
+          console.log(res);
         })
         .catch((error) => console.log(error));
     }
   };
-  let navigate = useNavigate();
-  const handleMessageText = (e) => {
-    setCurrentMsgText(e.target.value);
-  };
-  const handleEnterKeyOnMessage = (e) => {
-    if (e.keyCode === 13) sendMessage();
-  };
-  const roomData = {
-    userName: "sadas",
-    gameName: "dota",
-    title: "ahem nvm",
-    description:
-      "oin, I will be waitingoin, I will be waitingoin, I will be waiting",
-    rank: "https://raw.githubusercontent.com/Soneliem/WAIUA/master/Demo/images/ranksimg/13.png",
-    tools: {
-      discord: true,
-    },
-    targetTime: "21 : 00",
-    partyMembersCount: 4,
-    badge: "try harder",
+  const handleEnterKeyOnMessage = (e, roomId) => {
+    if (e.key === "Enter") {
+      onMessageSend(e, roomId);
+    }
   };
   const scrollStyle = {
     root: { padding: "0 15px", height: "100vh-800px" },
@@ -99,10 +177,16 @@ function Room(props) {
         ? { display: "flex ", alignItems: "center" }
         : { boxAlign: "end", boxOrient: "vertical", boxPack: "end" },
   };
+  if (isLoading) {
+    return <Loader />;
+  }
+  if (isError) {
+    return <div>Error </div>;
+  }
   return (
     <div style={{ position: "relative" }}>
       <ActionIcon
-        onClick={() => navigate(-1)}
+        onClick={handlePrevious}
         style={{ position: "absolute", left: -65 }}
       >
         <IoReturnUpBack size={55} />
@@ -117,24 +201,41 @@ function Room(props) {
             style={{ width: "inherit" }}
           >
             <Group spacing="xl" position="apart">
-              <Group>
+              <Group noWrap>
                 <Avatar src="https://i.pinimg.com/736x/ab/75/46/ab754671e4b62d109fcf4d76aec8b4df--anime-manga-saitama.jpg" />
-                <Group direction="column" spacing={0}>
+                <Group direction="column" spacing={0} grow={1}>
                   <Group spacing={5}>
-                    <Text size="lg" weight={500}>
-                      {roomData.userName}
+                    <Text
+                      size="lg"
+                      weight={500}
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {data["user"]["username"].toUpperCase()}
                     </Text>
-                    <Text size="xs" weight="lighter">
-                      <i>LFP</i>
+                    <Text
+                      size="xs"
+                      weight="lighter"
+                      style={{ fontStyle: "italic" }}
+                      mt={4}
+                    >
+                      LFP
                     </Text>
-                    <img
+                    <Image
+                      mt={2}
+                      style={{ userSelect: "none" }}
+                      fit="contain"
                       height={15}
-                      width={15}
-                      src="https://images.cults3d.com/4QqRV9kLYYEuw9ur_X3yjQl1sjk=/516x516/https://files.cults3d.com/uploaders/15024335/illustration-file/a86d53e4-2bd9-4a8f-9550-986686c3131a/gi0mAjIh_400x400.png"
-                      alt="game logo"
+                      width={25}
+                      radius="md"
+                      withPlaceholder
+                      src={gameIdPicPair[data.room.gameId]}
                     />
                   </Group>
-                  <UserBadge badge={roomData.badge} />
+                  {/* <UserBadge badge={roomData.badge} /> */}
                 </Group>
               </Group>
               <Group
@@ -144,28 +245,26 @@ function Room(props) {
                 style={{ maxWidth: "65%" }}
                 align="center"
               >
-                <Text weight={500}>{roomData.title}</Text>
+                <Text
+                  weight={500}
+                  style={{
+                    maxWidth: "100%",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {data.room.title}
+                </Text>
                 <Spoiler maxHeight={55} showLabel="Show more" hideLabel="Hide">
                   <Text size="xs" lineClamp={3}>
-                    {roomData.description}
+                    {data.room.description}
                   </Text>
                 </Spoiler>
               </Group>
-              <Group direction="column" spacing="xs" position="center" pr="xs">
-                <Box
-                  py={5}
-                  px={15}
-                  // mb={10}
-                  style={{
-                    // background: "black",
-                    borderRadius: 8,
-                  }}
-                >
-                  <Text size="lg" weight={500}>
-                    {roomData.targetTime}
-                  </Text>
-                </Box>
-                <Tools />
+              <Group spacing="md" position="center" pr="xs">
+                <Tools roomDetail={data.room} />
+                <LfpTimer roomDetail={data.room} />
               </Group>
             </Group>
           </Paper>
@@ -194,23 +293,26 @@ function Room(props) {
                   {roomMessages.length === 0 ? (
                     <Group position="center" direction="column" spacing="sm">
                       <Group spacing={4}>
-                        <RiGameLine size={28} color="#C0C0C0" />
-                        <Text size="sm" color="#C0C0C0" weight={500}>
+                        <RiGameLine size={28} color="#868e96" />
+                        <Text size="sm" color="dimmed" weight={500}>
                           Nobody sent message here.
                         </Text>
                       </Group>
-                      <Text size="sm" color="#C0C0C0" weight={500}>
+                      <Text size="sm" color="dimmed" weight={500}>
                         Be the first one to start conversation about this room!
                       </Text>
                     </Group>
                   ) : (
                     roomMessages.map((e) => {
                       return (
-                        <RoomMessage
-                          key={e.authorId + e.sentAt}
-                          authorId={e.authorId}
-                          message={e.message}
-                        />
+                        <React.Fragment key={e.author + e.createdAt}>
+                          <RoomMessage
+                            authorId={e.author}
+                            message={e.text}
+                            userId={userId}
+                          />
+                          <div ref={messagesEndRef} />
+                        </React.Fragment>
                       );
                     })
                   )}
@@ -219,11 +321,14 @@ function Room(props) {
               <Group style={{ width: "100%" }} mt="xs">
                 <TextInput
                   sx={{ flexGrow: 1 }}
-                  value={currentMsgText}
-                  onChange={handleMessageText}
-                  onKeyDown={handleEnterKeyOnMessage}
+                  value={messageText}
+                  onChange={(e) => setMessageText(e.currentTarget.value)}
+                  onKeyDown={(e) => handleEnterKeyOnMessage(e, data.room.id)}
                 />
-                <Button rightIcon={<FiSend size={18} />} onClick={sendMessage}>
+                <Button
+                  rightIcon={<FiSend size={18} />}
+                  onClick={(e) => onMessageSend(e, data.room.id)}
+                >
                   SEND
                 </Button>
               </Group>
@@ -240,9 +345,6 @@ function Room(props) {
             </Paper>
           </div>
         </Group>
-        {/* <Container>
-        <Rules />
-      </Container> */}
       </div>
     </div>
   );
@@ -250,7 +352,10 @@ function Room(props) {
 const RoomMembers = ({ roomLink }) => {
   return (
     <Group direction="column" position="center">
-      <Text size="lg"> Who is here?</Text>
+      <Text size="md" weight={600}>
+        {" "}
+        Who is here?
+      </Text>
       <Stack style={{ width: "100%" }} spacing="sm">
         <User
           user={{
@@ -308,8 +413,7 @@ const Invitation = ({ roomLink }) => {
   );
 };
 
-const RoomMessage = ({ key, authorId, message }) => {
-  const userId = "me1";
+const RoomMessage = ({ authorId, message, userId }) => {
   return authorId === userId ? (
     <Group
       noWrap
@@ -317,7 +421,6 @@ const RoomMessage = ({ key, authorId, message }) => {
       style={{ width: "100%" }}
       position="right"
       spacing="xs"
-      key={key}
     >
       <Text
         sx={(theme) => ({
@@ -341,7 +444,7 @@ const RoomMessage = ({ key, authorId, message }) => {
       />
     </Group>
   ) : (
-    <Group noWrap mt="xs" style={{ width: "100%" }} key={key}>
+    <Group noWrap mt="xs" style={{ width: "100%" }}>
       <Avatar
         radius="xl"
         // src={user.pfp}

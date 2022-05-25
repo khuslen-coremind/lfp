@@ -11,7 +11,7 @@ import { useCookies } from "react-cookie";
 import { useEffect, useContext } from "react";
 import AuthService from "../../services/auth.service";
 import { AuthContext } from "../../AuthContext";
-
+import RoomFormModal from "../RoomFormModal/RoomFormModal";
 const useStyles = createStyles((theme) => ({
   container: {
     display: "flex",
@@ -20,19 +20,8 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 function DefaultHoc(props) {
-  const [cookies, setCookie] = useCookies(["accessToken"]);
   const { isAuthenticated, setAuthenticated, userId, setUserId } =
     useContext(AuthContext);
-  useEffect(
-    () => {
-      console.log(
-        "access token from cookie= " + cookies.accessToken,
-        "userid from cookie= " + cookies.userId
-      );
-    },
-    []
-    // [isAuthenticated, setAuthenticated, userId, setUserId]
-  );
 
   const { classes } = useStyles();
   let navigate = useNavigate();
@@ -92,6 +81,7 @@ function DefaultHoc(props) {
       </Container>
       <LoginModal />
       <RegisterModal />
+      <RoomFormModal />
     </AppShell>
   );
 }

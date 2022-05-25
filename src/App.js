@@ -8,7 +8,6 @@ import List from "./components/followList/List";
 import { Routes, Route } from "react-router-dom";
 import DefaultHoc from "./containers/default hoc/DefaultHoc";
 import PostForm from "./containers/PostForm/PostForm";
-import RoomFormModal from "./containers/RoomFormModal/RoomFormModal";
 import Room from "./containers/room/Room";
 import { useMemo, useState, useEffect } from "react";
 import { ModalsContext } from "./ModalsContext";
@@ -38,12 +37,13 @@ function getCookie(name) {
   return null;
 }
 function App() {
-  const [cookies, setCookie] = useCookies(["accessToken"]);
   const { classes } = useStyles();
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
+  const [roomModalOpen, setRoomModalOpen] = useState(false);
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState(null);
 
   const authValue = useMemo(
     () => ({
@@ -51,18 +51,32 @@ function App() {
       setAuthenticated,
       userId,
       setUserId,
+      username,
+      setUsername,
     }),
-    [isAuthenticated, setAuthenticated, userId, setUserId]
+    [
+      isAuthenticated,
+      setAuthenticated,
+      userId,
+      setUserId,
+      username,
+      setUsername,
+    ]
   );
   useEffect(() => {
-    console.log(getCookie("accessToken"));
     if (getCookie("accessToken") !== null) {
-      console.log("auth context value" + isAuthenticated);
       setAuthenticated(true);
-      setUserId(getCookie("userId"));
+      setUserId(parseInt(getCookie("userId")));
+      setUsername(getCookie("lfpusername"));
     }
   }, [authValue]);
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
 
   return (
     <AuthContext.Provider value={authValue}>
@@ -71,6 +85,7 @@ function App() {
           value={{
             loginModal: [loginModalOpen, setLoginModalOpen],
             registerModal: [registerModalOpen, setRegisterModalOpen],
+            roomModal: [roomModalOpen, setRoomModalOpen],
           }}
         >
           <Routes>
@@ -113,18 +128,7 @@ function App() {
               }
             />
             <Route
-              path="create/room"
-              element={
-                <DefaultHoc>
-                  <Box mt={45}>
-                    <RoomFormModal />
-                  </Box>
-                </DefaultHoc>
-              }
-            />
-
-            <Route
-              path="room/12"
+              path="room/:roomId"
               element={
                 <DefaultHoc>
                   <Box mt={20}>
@@ -133,6 +137,7 @@ function App() {
                 </DefaultHoc>
               }
             />
+
             {/* <Route
 				path="valorant/create/room"
 				element={

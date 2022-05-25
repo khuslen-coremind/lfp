@@ -19,21 +19,11 @@ const useStyles = createStyles((theme) => ({
 
 function LfpTimer({ roomDetail }) {
   const [now, setNow] = useState(false);
-  const [time, setTime] = useState(moment().format());
-  console.log(
-    moment(moment(moment().format()).format("YYYY-MM-D hh:mm:ss"))
-      .add(5, "m")
-      .diff(
-        moment(roomDetail.targetTime).format("YYYY-MM-D hh:mm:ss"),
-        "m",
-        true
-      )
-  );
+  const [time, setTime] = useState(moment().format("hh:mm"));
+  const target = moment(roomDetail.targetTime).format("hh:mm");
   useEffect(() => {
-    const dateNow = moment(moment().format()).format("YYYY-MM-D hh:mm:ss");
-    const targetTime = moment(roomDetail.targetTime).format(
-      "YYYY-MM-D hh:mm:ss"
-    );
+    const dateNow = moment().format();
+    const targetTime = moment(roomDetail.targetTime).format();
     if (
       moment(dateNow).add(5, "m").diff(targetTime, "m") > 5 ||
       moment(dateNow).subtract(5, "m").diff(targetTime, "m") > 5
@@ -57,7 +47,13 @@ function LfpTimer({ roomDetail }) {
       className={now ? classes.now : classes.time}
     >
       <Text color="white" pl={7} pb={1} weight={600}>
-        {now ? "NOW" : moment(roomDetail.targetTime).format("hh:mm")}
+        {now
+          ? "NOW"
+          : target.slice(0, 2) +
+            " " +
+            target.slice(2, 3) +
+            " " +
+            target.slice(3)}
       </Text>
       <BsClock size={16} fill="#FFF" style={{ marginRight: 5 }} />
     </Group>

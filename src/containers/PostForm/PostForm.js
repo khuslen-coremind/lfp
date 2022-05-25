@@ -27,6 +27,8 @@ import valorantSvg from "../../images/gamesLogo/valorant.svg";
 import genshinSvg from "../../images/gamesLogo/genshin-impact.svg";
 import mlSvg from "../../images/gamesLogo/mobile-legends.svg";
 import pubgmSvg from "../../images/gamesLogo/pubgm.svg";
+import CsgoDarkSvg from "../../images/gamesLogo/csgoDark.svg";
+import GenshinImpactDarkSvg from "../../images/gamesLogo/genshin-impact-dark.svg";
 import axios from "axios";
 import { API_URL } from "../../constants/request";
 import { AiOutlineCheck } from "react-icons/ai";
@@ -50,7 +52,6 @@ function PostForm(props) {
   const { loginModal } = useContext(ModalsContext);
   const [loginModalOpen, setLoginModalOpen] = loginModal;
   let navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["accessToken"]);
   const handlePrevious = (e) => {
     e.preventDefault();
     navigate("../");
@@ -74,9 +75,13 @@ function PostForm(props) {
   const gameData = [
     { value: "1", label: "Dota 2", image: dota2Svg },
     { value: "2", label: "League of Legends", image: lolSvg },
-    { value: "3", label: "Counter-Strike: Global Offensive", image: csgoSvg },
+    {
+      value: "3",
+      label: "Counter-Strike: Global Offensive",
+      image: CsgoDarkSvg,
+    },
     { value: "4", label: "Valorant", image: valorantSvg },
-    { value: "5", label: "Genshin Impact", image: genshinSvg },
+    { value: "5", label: "Genshin Impact", image: GenshinImpactDarkSvg },
     { value: "6", label: "Mobile Legends: Bang Bang", image: mlSvg },
     { value: "7", label: "PUBG Mobile", image: pubgmSvg },
   ];
@@ -123,7 +128,7 @@ function PostForm(props) {
       };
 
       axios
-        .post(`${API_URL}/api/post/create`, formData, config)
+        .post(`http://${API_URL}/api/post/create`, formData, config)
         .then((res) => {
           if (res.status === 200) {
             setLoading(false);
@@ -282,7 +287,7 @@ function PostForm(props) {
         </Group>
       </Group>
       <Container>
-        <MyDrafts handleDraftPick={handleDraft} />
+        <MyDrafts userId={userId} handleDraftPick={handleDraft} />
         <br />
         <Rules />
       </Container>
