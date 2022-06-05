@@ -55,13 +55,13 @@ function Room(props) {
 	const roomLink = window.location.href;
 	const date = new Date(Date.now());
 	const [roomMessages, setRoomMessages] = useState([]);
-	const [roomData, setRoomData] = useState([]);
+	const [roomData, setRoomData] = useState();
 	const [loading, setLoading] = useState(false);
 	const [now, setNow] = useState(false);
 	const [messageText, setMessageText] = useState("");
 	const messagesEndRef = useRef(null);
 	// const [socket, setSocket] = useState(null);
-	const socket = io(`http://${API_URL}`, { transports: ["websocket"] });
+	const socket = io(`http://${API_URL}`);
 
 	let navigate = useNavigate();
 	const gameIdPicPair = {
@@ -103,12 +103,19 @@ function Room(props) {
 
 	useEffect(() => {
 		// socket.on("message", (message) => console.log(message));
-		socket.emit("join_room", roomId);
+		userId && socket.emit("join", { userId, roomId });
+		console.log("use effect worked ");
 	}, [roomId]);
 
 	useEffect(() => {
+		socket.on("roomData", (data) => {
+			setRoomData((prev) => [...prev, data]);
+		});
+	}, [socket]);
+	useEffect(() => {
 		socket.on("receive_room_messages", (data) => {
 			setRoomMessages((prev) => [...prev, data]);
+			setRoomData((prev) => [...prev, data]);
 		});
 		scrollToBottom();
 	}, [socket, roomMessages]);
@@ -142,13 +149,13 @@ function Room(props) {
 					(date.getSeconds() < 10 ? "0" : "") +
 					date.getSeconds(),
 			};
-			socket.emit("send_message", messageData);
+			socket.emit("sendMessage", messageData);
 			setRoomMessages((list) => [...list, messageData]);
 			setMessageText("");
-			axios
-				.post(`http://${API_URL}/api/chat/${roomId}`, messageData, config)
-				.then((res) => {})
-				.catch((error) => console.log(error));
+			// axios
+			// 	.post(`http://${API_URL}/api/chat/${roomId}`, messageData, config)
+			// 	.then((res) => {})
+			// 	.catch((error) => console.log(error));
 		}
 	};
 	const handleEnterKeyOnMessage = (e, roomId) => {
@@ -310,7 +317,8 @@ function Room(props) {
 							px="xs"
 							ml="sm"
 							withBorder>
-							<RoomMembers roomLink={roomLink} />
+							{/* <RoomMembers roomLink={roomLink} /> */}
+							<div>{JSON.stringify(roomData)}</div>
 						</Paper>
 					</div>
 				</Group>
