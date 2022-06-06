@@ -136,14 +136,14 @@ function LoginModal() {
           Log In
         </Button>
 
-        <Text classNames={{ root: "modal-txt-or" }}> OR</Text>
-        <Button
+        {/* <Text classNames={{ root: "modal-txt-or" }}> OR</Text> */}
+        {/* <Button
           classNames={{ root: "modal-contw-google-btn" }}
           leftIcon={<FcGoogle size={25} />}
           size="lg"
         >
           Continue with Google
-        </Button>
+        </Button> */}
         <Group ml={5} className="no-account-helper">
           <Text>No account? </Text>
           <Anchor

@@ -11,6 +11,7 @@ import {
   Divider,
   Image,
   Menu,
+  Anchor,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 
@@ -45,13 +46,24 @@ import { useContext } from "react";
 import { AuthContext } from "../../AuthContext";
 
 const useStyles = createStyles((theme) => ({
-  button: {
+  postBody: {
     border: "1px solid #e9ecef",
     borderRadius: 4,
     display: "flex",
     flexDirection: "row",
     alignItems: "stretch",
     justifyContent: "stretch",
+    marginTop: 10,
+  },
+  hidden: {
+    backgroundColor: "#D3D3D3",
+    borderRadius: 4,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 15,
+    paddingBottom: 15,
     marginTop: 10,
   },
   vote: {
@@ -100,6 +112,10 @@ function Post({ key, postData, onDelete }) {
   const postedAt = "10 minutes ago";
   const handlePostDeletion = (id) => (e) => {
     onDelete(id);
+  };
+  const [hidden, setHidden] = useState(false);
+  const handleHide = () => {
+    setHidden(true);
   };
   const handleVote = (id, isUpVote) => (e) => {
     console.log("vote", postData.hasUpVoted, postData.hasDownVoted, isUpVote);
@@ -161,11 +177,19 @@ function Post({ key, postData, onDelete }) {
       });
     }
   };
-  return (
+  return hidden ? (
+    <Paper key={key} className={classes.hidden}>
+      <Group>
+        <BsEyeSlash size={20} />
+        <Text>This content is hidden </Text>
+        <Anchor onClick={() => setHidden(false)}>Show</Anchor>
+      </Group>
+    </Paper>
+  ) : (
     <Paper
       key={key}
       // position="apart" p="xs"
-      className={classes.button}
+      className={classes.postBody}
       // pr={17} pl={16}
     >
       {/* {JSON.stringify(postData)} */}
@@ -297,16 +321,21 @@ function Post({ key, postData, onDelete }) {
           <Group spacing={0} position="apart" sx={{ width: "100%" }}>
             <Group>
               {/* <Button
-								px={11}
-								leftIcon={<BsChatSquare style={{ marginTop: 1 }} />}
-								variant="subtle"
-								onClick={collapse}>
-								{postData.comments.length} Comments
-							</Button> */}
+              px={11}
+              leftIcon={<BsChatSquare style={{ marginTop: 1 }} />}
+              variant="subtle"
+              onClick={collapse}>
+              {postData.comments.length} Comments
+            </Button> */}
               <Button px={11} leftIcon={<AiOutlineShareAlt />} variant="subtle">
                 Share{" "}
               </Button>
-              <Button px={11} leftIcon={<BsEyeSlash />} variant="subtle">
+              <Button
+                px={11}
+                leftIcon={<BsEyeSlash />}
+                variant="subtle"
+                onClick={handleHide}
+              >
                 Hide
               </Button>
             </Group>

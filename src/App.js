@@ -16,7 +16,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import SideScreenPost from "./containers/SideScreenPost";
 import SideScreenRoom from "./containers/SideScreenRoom";
 import RoomActivity from "./containers/RoomActivity";
-import { useCookies } from "react-cookie";
+import { SocketContext, socket } from "./SocketContext";
 
 const useStyles = createStyles((theme) => ({
   container: {

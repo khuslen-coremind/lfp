@@ -37,6 +37,7 @@ import FollowListButton from "../FollowListButton";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../../AuthContext";
+import { ModalsContext } from "../../ModalsContext";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   icon: { ref: getRef("icon") },
@@ -164,6 +165,8 @@ function List(props) {
   const [unfollowList, setUnfollowList] = useState([]);
   const [loading, setLoading] = useState(false);
   const { isAuthenticated } = useContext(AuthContext);
+  const { loginModal } = useContext(ModalsContext);
+  const [loginModalOpen, setLoginModalOpen] = loginModal;
   const getMyList = async () => {
     // console.log("userId: " + userId);
     const response = await fetch(`http://${API_URL}/api/user/followlist/get`, {
@@ -195,7 +198,13 @@ function List(props) {
         });
     }
   }, [loading, isAuthenticated]);
-
+  const handleListOpen = () => {
+    if (isAuthenticated) {
+      setOpen(true);
+    } else {
+      setLoginModalOpen(true);
+    }
+  };
   const handleList = (gameId, action) => (e) => {
     setLoading(true);
     const config = {
@@ -319,7 +328,7 @@ function List(props) {
               </Box>
             }
             onClick={() => {
-              setOpen(true);
+              handleListOpen();
             }}
           >
             Add a game to the list
