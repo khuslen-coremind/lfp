@@ -2,7 +2,7 @@ import { Box, Loader, Text } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CreatePost from "../../components/post/CreatePost";
 import Post from "../../components/post/Post";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { BsCheck2 } from "react-icons/bs";
@@ -12,174 +12,166 @@ import { API_URL } from "../../constants/request";
 import { showNotification } from "@mantine/notifications";
 
 function getCookie(name) {
-  var nameEQ = name + "=";
-  var ca = document.cookie.split(";");
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == " ") c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-  }
-  return null;
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(";");
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == " ") c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+	}
+	return null;
 }
 function SideScreenPost() {
-  const { gameId } = useParams();
-  const [pageNumber, setPageNumber] = useState(2);
-  const [limit, setLimit] = useState(15);
-  const [items, setItems] = useState([]);
-  const [hasMore, sethasMore] = useState(true);
-  const { isAuthenticated, setAuthenticated } = useContext(AuthContext);
+	const { gameId } = useParams();
+	const [pageNumber, setPageNumber] = useState(2);
+	const [limit, setLimit] = useState(15);
+	const [items, setItems] = useState([]);
+	const [hasMore, sethasMore] = useState(true);
+	const { isAuthenticated, setAuthenticated } = useContext(AuthContext);
 
-  useEffect(() => {
-    const getPosts = async () => {
-      const res = await fetch(
-        `http://localhost:8000/api/post/${gameId}/posts?page=1&limit=${limit}`,
-        {
-          method: "GET",
-          ...(isAuthenticated && {
-            headers: new Headers({
-              Authorization: `Bearer ${getCookie("accessToken")}`,
-            }),
-          }),
-        }
-      );
-      const data = await res.json();
-      console.log(data);
-      if (data.results.length === 0) {
-        sethasMore(false);
-      }
-      return data.results;
-    };
-    getPosts()
-      .then((results) => setItems(results))
-      .catch((error) => console.log(error));
-  }, [gameId, isAuthenticated]);
+	useEffect(() => {
+		const getPosts = async () => {
+			const res = await fetch(
+				`http://localhost:8000/api/post/${gameId}/posts?page=1&limit=${limit}`,
+				{
+					method: "GET",
+					...(isAuthenticated && {
+						headers: new Headers({
+							Authorization: `Bearer ${getCookie("accessToken")}`,
+						}),
+					}),
+				}
+			);
+			const data = await res.json();
+			console.log(data);
+			if (data.results.length === 0) {
+				sethasMore(false);
+			}
+			return data.results;
+		};
+		getPosts()
+			.then((results) => setItems(results))
+			.catch((error) => console.log(error));
+	}, [gameId, isAuthenticated]);
 
-  const fetchPosts = async () => {
-    const res = await fetch(
-      `http://localhost:8000/api/post/${gameId}/posts?page=${pageNumber}&limit=${
-        limit + 3
-      }`,
-      {
-        ...(isAuthenticated && {
-          headers: new Headers({
-            Authorization: `Bearer ${getCookie("accessToken")}`,
-          }),
-        }),
-      }
-    );
+	const fetchPosts = async () => {
+		const res = await fetch(
+			`http://localhost:8000/api/post/${gameId}/posts?page=${pageNumber}&limit=${
+				limit + 3
+			}`,
+			{
+				...(isAuthenticated && {
+					headers: new Headers({
+						Authorization: `Bearer ${getCookie("accessToken")}`,
+					}),
+				}),
+			}
+		);
 
-    const data = await res.json();
+		const data = await res.json();
 
-    return data.results;
-  };
+		return data.results;
+	};
 
-  const fetchData = async () => {
-    const commentsFormServer = await fetchPosts();
+	const fetchData = async () => {
+		const commentsFormServer = await fetchPosts();
 
-    setItems([...items, ...commentsFormServer]);
+		setItems([...items, ...commentsFormServer]);
 
-    if (commentsFormServer.length === 0 || commentsFormServer.length < limit) {
-      sethasMore(false);
-    }
-    setPageNumber(pageNumber + 1);
-  };
-  const handlePostDeletion = (id) => {
-    if (isAuthenticated) {
-      const requestData = { postId: id };
-      const config = {
-        headers: {
-          Authorization: `Bearer ${getCookie("accessToken")}`,
-        },
-      };
-      axios
-        .post(`http://${API_URL}/api/post/delete`, requestData, config)
-        .then((response) => {
-          if (response.status === 200) {
-            let posts = items;
-            posts = posts.filter((e) => e.postInfo.id !== id);
-            setItems(posts);
-            showNotification({
-              id: "deletion-complete",
-              disallowClose: true,
-              autoClose: 7000,
-              title: "Deleted the post",
-              color: "yellow",
-              loading: false,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      showNotification({
-        id: "deletion-error",
-        disallowClose: true,
-        autoClose: 7000,
-        title: "Can't delete rn ;-;",
-        color: "red",
-        loading: false,
-      });
-    }
-  };
-  return (
-    <Box mt={45} style={{ flexGrow: 0.7 }}>
-      <Text mb={16}>Community posts</Text>
-      <CreatePost />
-      <InfiniteScroll
-        //This is important field to render the next data
-        dataLength={items.length}
-        next={fetchData}
-        hasMore={hasMore}
-        loader={
-          <Box mt={50} sx={{ textAlign: "center" }}>
-            <Loader
-              color="gray"
-              size="lg"
-              variant="dots"
-              sx={{ margin: "auto" }}
-            />
-          </Box>
-        }
-        endMessage={
-          <Box
-            my={50}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <BsCheck2 size={30} color="green" />
-            <Text Text size="xl" ml="xs" weight={500}>
-              You are up to date!
-            </Text>
-          </Box>
-        }
-        // below props only if you need pull down functionality
-        // refreshFunction={this.refresh}
-        // pullDownToRefresh
-        // pullDownToRefreshThreshold={50}
-        // pullDownToRefreshContent={ */}
-        // 	<h3 style={{ textAlign: "center" }}>&#8595; Pull down to refresh</h3>
-        // }
-        // releaseToRefreshContent={
-        // 	<h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>
-        // }
-      >
-        {items.map((e) => {
-          console.log(e);
-          return (
-            <Post
-              postData={e}
-              key={e.postInfo.id}
-              onDelete={handlePostDeletion}
-            />
-          );
-        })}
-      </InfiniteScroll>
-    </Box>
-  );
+		if (commentsFormServer.length === 0 || commentsFormServer.length < limit) {
+			sethasMore(false);
+		}
+		setPageNumber(pageNumber + 1);
+	};
+	const handlePostDeletion = (id) => {
+		if (isAuthenticated) {
+			const requestData = { postId: id };
+			const config = {
+				headers: {
+					Authorization: `Bearer ${getCookie("accessToken")}`,
+				},
+			};
+			axios
+				.post(`http://${API_URL}/api/post/delete`, requestData, config)
+				.then((response) => {
+					if (response.status === 200) {
+						let posts = items;
+						posts = posts.filter((e) => e.postInfo.id !== id);
+						setItems(posts);
+						showNotification({
+							id: "deletion-complete",
+							disallowClose: true,
+							autoClose: 7000,
+							title: "Deleted the post",
+							color: "yellow",
+							loading: false,
+						});
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		} else {
+			showNotification({
+				id: "deletion-error",
+				disallowClose: true,
+				autoClose: 7000,
+				title: "Can't delete rn ;-;",
+				color: "red",
+				loading: false,
+			});
+		}
+	};
+	return (
+		<Box mt={45} style={{ flexGrow: 0.7 }}>
+			<Text mb={16}>Community posts</Text>
+			<CreatePost />
+			<InfiniteScroll
+				//This is important field to render the next data
+				dataLength={items.length}
+				next={fetchData}
+				hasMore={hasMore}
+				loader={
+					<Box mt={50} sx={{ textAlign: "center" }}>
+						<Loader color="gray" size="lg" variant="dots" sx={{ margin: "auto" }} />
+					</Box>
+				}
+				endMessage={
+					<Box
+						my={50}
+						style={{
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+						}}>
+						<BsCheck2 size={30} color="green" />
+						<Text Text size="xl" ml="xs" weight={500}>
+							You are up to date!
+						</Text>
+					</Box>
+				}
+				// below props only if you need pull down functionality
+				// refreshFunction={this.refresh}
+				// pullDownToRefresh
+				// pullDownToRefreshThreshold={50}
+				// pullDownToRefreshContent={ */}
+				// 	<h3 style={{ textAlign: "center" }}>&#8595; Pull down to refresh</h3>
+				// }
+				// releaseToRefreshContent={
+				// 	<h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>
+				// }
+			>
+				{items.map((e) => {
+					console.log(e);
+					return (
+						<React.Fragment key={e.postInfo.id}>
+							<Post postData={e} onDelete={handlePostDeletion} />
+						</React.Fragment>
+					);
+				})}
+			</InfiniteScroll>
+		</Box>
+	);
 }
 
 export default SideScreenPost;

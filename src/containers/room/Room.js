@@ -60,8 +60,7 @@ function Room(props) {
 	const [now, setNow] = useState(false);
 	const [messageText, setMessageText] = useState("");
 	const messagesEndRef = useRef(null);
-	// const [socket, setSocket] = useState(null);
-	const socket = io(`http://${API_URL}`);
+	const socketClientRef = useRef();
 
 	let navigate = useNavigate();
 	const gameIdPicPair = {
@@ -90,35 +89,39 @@ function Room(props) {
 	const { isLoading, isError, data, error } = useQuery("roomInfo", getRoomDetail);
 
 	useEffect(() => {
-		getMessageHistory()
-			.then((results) => {
-				// if ((results = [])) {
-				//   setRoomMessages([]);
-				// } else {
-				setRoomMessages(results);
-				// }
-			})
-			.catch((error) => console.log(error));
+		const client = io("http://localhost:8000", {});
+		client.on("connect", () => {
+			console.log("connected");
+		});
+		client.on("disconnect", () => {
+			console.log("diconnected");
+		});
+		client.on("receive_room_messages", (data) => {
+			setRoomMessages((prev) => [...prev, data]);
+			console.log("nice receive_room_messages ");
+			// setRoomData((prev) => [...prev, data]);
+			scrollToBottom();
+		});
+		socketClientRef.current = client;
+		return () => {
+			client.removeAllListeners();
+		};
 	}, []);
 
 	useEffect(() => {
 		// socket.on("message", (message) => console.log(message));
-		userId && socket.emit("join", { userId, roomId });
-		console.log("use effect worked ");
+		userId &&
+			socketClientRef.current.emit("join", { userId, roomId }, () => {
+				console.log("joined room " + userId + roomId);
+			});
+		console.log("use effect and join worked ");
 	}, [roomId]);
 
 	useEffect(() => {
-		socket.on("roomData", (data) => {
+		socketClientRef.current.on("roomData", (data) => {
 			setRoomData((prev) => [...prev, data]);
 		});
-	}, [socket]);
-	useEffect(() => {
-		socket.on("receive_room_messages", (data) => {
-			setRoomMessages((prev) => [...prev, data]);
-			setRoomData((prev) => [...prev, data]);
-		});
-		scrollToBottom();
-	}, [socket, roomMessages]);
+	}, [socketClientRef.current]);
 
 	const handlePrevious = (e) => {
 		e.preventDefault();
@@ -149,8 +152,7 @@ function Room(props) {
 					(date.getSeconds() < 10 ? "0" : "") +
 					date.getSeconds(),
 			};
-			socket.emit("sendMessage", messageData);
-			setRoomMessages((list) => [...list, messageData]);
+			socketClientRef.current.emit("sendMessage", messageData);
 			setMessageText("");
 			// axios
 			// 	.post(`http://${API_URL}/api/chat/${roomId}`, messageData, config)
