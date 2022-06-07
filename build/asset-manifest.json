@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/static/css/main.d9c6623c.css",
+    "main.js": "/static/js/main.c0681919.js",
+    "static/media/ml.png": "/static/media/ml.3828e153aec689b3705f.png",
+    "static/media/pubgm.svg": "/static/media/pubgm.75734f71bcda6a786bacdc3938a490e5.svg",
+    "static/media/Manrope-Bold.ttf": "/static/media/Manrope-Bold.bf52bb7e7aa3e1e99ab5.ttf",
+    "static/media/Manrope-Light.ttf": "/static/media/Manrope-Light.182f890e193b3af623fa.ttf",
+    "static/media/lol.png": "/static/media/lol.c9a3d9df90aedeeff404.png",
+    "static/media/mobile-legends.svg": "/static/media/mobile-legends.c6197b59ed1c4625c15336e2b2326326.svg",
+    "static/media/pubgm.png": "/static/media/pubgm.45ad211ba7ff12d2d604.png",
+    "static/media/genshin-impact-dark.svg": "/static/media/genshin-impact-dark.4d4eff2ca96800eec762c50acb1e98ad.svg",
+    "static/media/genshin-impact.svg": "/static/media/genshin-impact.aad8cb5b9bc0b5b2b9cf725dc813990f.svg",
+    "static/media/valorant.png": "/static/media/valorant.be3ecc9aad6f4017acb5.png",
+    "static/media/genshin200.jpeg": "/static/media/genshin200.eb9818f946503259e802.jpeg",
+    "static/media/csgoDark.svg": "/static/media/csgoDark.19b34346ff89b7970247a1f13b29c07d.svg",
+    "static/media/csgo.svg": "/static/media/csgo.b04dfd30f2d989d5df0d8bdd431343d5.svg",
+    "static/media/lol.svg": "/static/media/lol.a5d99ae1c5f4ed6e7fa7ca2322b9bc11.svg",
+    "static/media/dota2.svg": "/static/media/dota2.4bf61eaf130a5817595956c9cd540b44.svg",
+    "static/media/valorant.svg": "/static/media/valorant.6bbc46bc424f62e0b4aa7267a47e8995.svg",
+    "index.html": "/index.html",
+    "main.d9c6623c.css.map": "/static/css/main.d9c6623c.css.map",
+    "main.c0681919.js.map": "/static/js/main.c0681919.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d9c6623c.css",
+    "static/js/main.c0681919.js"
+  ]
+}
