@@ -1,3 +1,3 @@
-export const API_URL = "localhost:8000";
-export const USER_URL = "http://localhost:8000/api/user";
-export const SOCKET_URL = "http://localhost:8000";
+export const API_URL = "http://3.87.70.209:5020";
+export const USER_URL = "http://3.87.70.209:5020/api/user";
+export const SOCKET_URL = "http://3.87.70.209:5020";

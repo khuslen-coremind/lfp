@@ -85,7 +85,6 @@ function DefaultHeader({ navLogoHandler, handleToHome, onLogin, onRegister }) {
 								}
 								onClick={(e) => navigate("/create/post")}
 								// component="a"
-								// href="http://localhost:3000/create/post"
 								// target="_blank"
 							>
 								Create a post

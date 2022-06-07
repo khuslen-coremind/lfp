@@ -32,7 +32,7 @@ function SideScreenPost() {
 	useEffect(() => {
 		const getPosts = async () => {
 			const res = await fetch(
-				`http://localhost:8000/api/post/${gameId}/posts?page=1&limit=${limit}`,
+				`http://${API_URL}/api/post/${gameId}/posts?page=1&limit=${limit}`,
 				{
 					method: "GET",
 					...(isAuthenticated && {
@@ -56,9 +56,7 @@ function SideScreenPost() {
 
 	const fetchPosts = async () => {
 		const res = await fetch(
-			`http://localhost:8000/api/post/${gameId}/posts?page=${pageNumber}&limit=${
-				limit + 3
-			}`,
+			`http://${API_URL}/api/post/${gameId}/posts?page=${pageNumber}&limit=${limit + 3}`,
 			{
 				...(isAuthenticated && {
 					headers: new Headers({
@@ -161,11 +159,11 @@ function SideScreenPost() {
 				// 	<h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>
 				// }
 			>
-				{items.map((e) => {
-					console.log(e);
+				{items.map((element) => {
+					console.log(element);
 					return (
-						<React.Fragment key={e.postInfo.id}>
-							<Post postData={e} onDelete={handlePostDeletion} />
+						<React.Fragment key={element.postInfo.id}>
+							<Post postData={element} onDelete={handlePostDeletion} />
 						</React.Fragment>
 					);
 				})}
